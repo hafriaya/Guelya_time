@@ -1,12 +1,11 @@
 package controller;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-import model.User;
+import config.SceneManager;
+import service.SessionService;
 import service.UserService;
+import model.User;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
 
 public class RegisterController {
 
@@ -19,25 +18,33 @@ public class RegisterController {
 
     @FXML
     public void onRegister() {
-        User user = new User(
-                emailField.getText(),
-                passwordField.getText(),
-                nameField.getText()
-        );
+        String email = emailField.getText();
+        String password = passwordField.getText();
+        String name = nameField.getText();
 
+        // Validation simple
+        if (email.isEmpty() || password.isEmpty() || name.isEmpty()) {
+            messageLabel.setText("Tous les champs sont obligatoires.");
+            return;
+        }
+
+        // Créer l'utilisateur
+        User user = new User(email, password, name);
+
+        // Enregistrer
         if (userService.register(user)) {
-            messageLabel.setText("Registration successful!");
+            // Stocker dans la session
+            SessionService.getInstance().setCurrentUser(user);
+
+            // Naviguer vers le dashboard
+            SceneManager.getInstance().switchTo("dashboard");
         } else {
-            messageLabel.setText("Failed to register.");
+            messageLabel.setText("Erreur lors de l'inscription.");
         }
     }
 
     @FXML
     public void goLogin() {
-        try {
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/login.fxml")));
-            stage.setScene(scene);
-        } catch (Exception e) { e.printStackTrace(); }
+        SceneManager.getInstance().switchTo("login");
     }
 }

@@ -1,45 +1,21 @@
 package service;
 
-
-
-import config.Neo4jConfig;
+import repository.UserRepository;
 import model.User;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.Transaction;
 
 public class UserService {
+    private final UserRepository userRepository = new UserRepository();
 
     public boolean register(User user) {
-        try (Session session = Neo4jConfig.getDriver().session()) {
-
-            return session.writeTransaction(tx -> {
-
-                var result = tx.run(
-                        "CREATE (u:User {email: $email, password: $password, name: $name})",
-                        org.neo4j.driver.Values.parameters(
-                                "email", user.getEmail(),
-                                "password", user.getPassword(),
-                                "name", user.getName()
-                        )
-                );
-
-                return true;
-            });
-
-        } catch (Exception e) {
-            return false;
-        }
+        return userRepository.saveUser(user);
     }
 
     public boolean login(String email, String password) {
-        try (Session session = Neo4jConfig.getDriver().session()) {
+        return userRepository.authenticateUser(email, password);
+    }
 
-            var result = session.run(
-                    "MATCH (u:User {email: $email, password: $password}) RETURN u",
-                    org.neo4j.driver.Values.parameters("email", email, "password", password)
-            );
-
-            return result.hasNext();
-        }
+    // Nouvelle méthode pour récupérer l'utilisateur complet
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
