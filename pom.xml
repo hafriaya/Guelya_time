@@ -38,6 +38,19 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- These two dependencies were incorrectly placed outside the dependencies section -->
+        <dependency>
+            <groupId>org.neo4j.driver</groupId>
+            <artifactId>neo4j-java-driver</artifactId>
+            <version>5.17.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
