@@ -1,27 +1,28 @@
 package app;
 
-
 import config.Neo4jConfig;
+import config.SceneManager;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {
-
+    public void start(Stage primaryStage) throws Exception {
+        // Initialiser Neo4j
         Neo4jConfig.initialize();
 
-        FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/login.fxml")
-        );
+        // Configurer le gestionnaire de scènes
+        SceneManager sceneManager = SceneManager.getInstance();
+        sceneManager.setPrimaryStage(primaryStage);
 
-        Scene scene = new Scene(loader.load());
-        stage.setTitle("Guelya Time");
-        stage.setScene(scene);
-        stage.show();
+        // Afficher l'écran de login
+        sceneManager.switchTo("login");
+
+        primaryStage.setTitle("Guelya Time - Recommandation de Films");
+        primaryStage.setMinWidth(1200);
+        primaryStage.setMinHeight(800);
+        primaryStage.show();
     }
 
     @Override
@@ -30,7 +31,6 @@ public class MainApp extends Application {
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }
-

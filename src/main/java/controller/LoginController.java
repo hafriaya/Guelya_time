@@ -1,20 +1,17 @@
 package controller;
 
-
+import config.SceneManager;
+import service.SessionService;
+import service.UserService;
+import model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import service.UserService;
-
 
 public class LoginController {
 
-    @FXML
-    private TextField emailField;
+    @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private Label messageLabel;
 
@@ -26,26 +23,24 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (userService.login(email, password)) {
-            loadHome();
-        } else {
-            messageLabel.setText("Invalid email or password.");
+            // Récupérer l'utilisateur de la base
+            User user = userService.getUserByEmail(email);
+
+            if (user != null) {
+                // Stocker dans la session
+                SessionService.getInstance().setCurrentUser(user);
+
+                // Naviguer vers le dashboard
+                SceneManager.getInstance().switchTo("dashboard");
+                return;
+            }
         }
+
+        messageLabel.setText("Email ou mot de passe incorrect.");
     }
 
     @FXML
     public void goRegister() {
-        try {
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/register.fxml")));
-            stage.setScene(scene);
-        } catch (Exception e) { e.printStackTrace(); }
-    }
-
-    private void loadHome() {
-        try {
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/home.fxml")));
-            stage.setScene(scene);
-        } catch (Exception e) { e.printStackTrace(); }
+        SceneManager.getInstance().switchTo("register");
     }
 }
