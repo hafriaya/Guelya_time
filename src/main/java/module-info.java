@@ -1,9 +1,21 @@
-module com.guelya.guelya_time {
+module Guelya_time {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.graphics;
+
+    // Required for Neo4j Java driver
     requires org.neo4j.driver;
 
+    // Allow FXML to access controller classes
+    opens controller to javafx.fxml;
 
-    opens com.guelya.guelya_time to javafx.fxml;
-    exports com.guelya.guelya_time;
+    // Allow JavaFX to access application class
+    opens app to javafx.graphics, javafx.fxml;
+
+    // Export your packages (public API)
+    exports app;
+    exports controller;
+    exports model;
+    exports service;
+    exports config;
 }
