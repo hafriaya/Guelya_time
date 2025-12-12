@@ -5,17 +5,39 @@ import model.User;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 
+import java.time.LocalDate;
+
 public class UserRepository {
 
+    private final Driver driver = Neo4jConfig.getDriver();
+
+    private long getNextId() {
+        try (Session session = driver.session()) {
+            return session.writeTransaction(tx -> {
+                Result result = tx.run(
+                        "MERGE (c:Counter {name:'UserId'}) " +
+                                "ON CREATE SET c.value = 1 " +
+                                "ON MATCH SET c.value = c.value + 1 " +
+                                "RETURN c.value AS id"
+                );
+                return result.single().get("id").asLong();
+            });
+        }
+    }
+
     public boolean saveUser(User user) {
-        try (Session session = Neo4jConfig.getDriver().session()) {
+        long id = getNextId();
+        user.setId(id);
+
+        try (Session session = driver.session()) {
             session.writeTransaction(tx -> {
-                tx.run("CREATE (u:User {email: $email, password: $password, name: $name, dateInscription: $date})",
+                tx.run("CREATE (u:User {id:$id, name:$name, email:$email, password:$password, dateInscription:$date})",
                         Values.parameters(
+                                "id", user.getId(),
+                                "name", user.getName(),
                                 "email", user.getEmail(),
                                 "password", user.getPassword(),
-                                "name", user.getName(),
-                                "date", user.getDateInscription()
+                                "date", user.getDateInscription() // LocalDate is supported
                         ));
                 return null;
             });
@@ -26,35 +48,30 @@ public class UserRepository {
         }
     }
 
-    public boolean authenticateUser(String email, String password) {
-        try (Session session = Neo4jConfig.getDriver().session()) {
-            Result result = session.run(
-                    "MATCH (u:User {email: $email, password: $password}) RETURN u",
-                    Values.parameters("email", email, "password", password)
-            );
-            return result.hasNext();
-        }
-    }
-
-    // Nouvelle méthode
     public User findByEmail(String email) {
-        try (Session session = Neo4jConfig.getDriver().session()) {
+        try (Session session = driver.session()) {
             Result result = session.run(
-                    "MATCH (u:User {email: $email}) RETURN u.name AS name, u.email AS email, u.password AS password, u.dateInscription AS date",
+                    "MATCH (u:User {email: $email}) RETURN u",
                     Values.parameters("email", email)
             );
 
-            if (result.hasNext()) {
-                Record record = result.next();
-                User user = new User(
-                        record.get("email").asString(),
-                        record.get("password").asString(),
-                        record.get("name").asString()
-                );
-                user.setDateInscription(record.get("date").asString());
-                return user;
-            }
-            return null;
+            if (!result.hasNext()) return null;
+
+            Record record = result.next();
+            Value u = record.get("u");
+
+            long id = u.get("id").asLong();
+            String name = u.get("name").asString();
+            String password = u.get("password").asString();
+            LocalDate date = u.get("dateInscription").asLocalDate();
+
+            return new User(id, name, email, password, date);
         }
+    }
+
+    public boolean authenticateUser(String email, String password) {
+        User user = findByEmail(email);
+        if (user == null) return false;
+        return user.getPassword().equals(password); // Hash comparison if needed
     }
 }

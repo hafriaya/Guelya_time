@@ -1,6 +1,5 @@
 package service;
 
-
 import model.User;
 
 public class SessionService {
@@ -10,25 +9,11 @@ public class SessionService {
     private SessionService() {}
 
     public static SessionService getInstance() {
-        if (instance == null) {
-            instance = new SessionService();
-        }
+        if (instance == null) instance = new SessionService();
         return instance;
     }
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-    }
-
-    public void clearSession() {
-        this.currentUser = null;
-    }
-
-    public boolean isLoggedIn() {
-        return currentUser != null;
-    }
+    public void setCurrentUser(User user) { this.currentUser = user; }
+    public User getCurrentUser() { return currentUser; }
+    public void clearSession() { currentUser = null; }
 }
