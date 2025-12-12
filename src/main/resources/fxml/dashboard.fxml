@@ -2,88 +2,22 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.DashboardController"
-            prefHeight="600" prefWidth="800">
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.DashboardController"
+      spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;">
 
-    <!-- TOP: Barre de navigation -->
-    <top>
-        <HBox style="-fx-background-color: #2c3e50; -fx-padding: 15;" spacing="20" alignment="CENTER_LEFT">
-            <Label text="🎬 CinéApp" style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;" />
-            <HBox spacing="15" alignment="CENTER">
-                <Button text="🏠 Accueil" onAction="#showHome" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" />
-                <Button text="🎥 Films" onAction="#showFilms" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" />
-                <Button text="🔍 Recherche" onAction="#showSearch" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" />
-                <Button text="👤 Profil" onAction="#showProfile" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-cursor: hand;" />
-            </HBox>
-            <Region HBox.hgrow="ALWAYS" />
-            <Button text="🚪 Déconnexion" onAction="#logout" style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;" />
-        </HBox>
-    </top>
+    <HBox spacing="15">
+        <Button text="Accueil" onAction="#showHome"/>
+        <Button text="Films" onAction="#showFilms"/>
+        <Button text="Recherche" onAction="#showSearch"/>
+        <Button text="Profil" onAction="#showProfile"/>
+        <Button text="Déconnexion" onAction="#logout"/>
+    </HBox>
 
-    <!-- LEFT: Barre latérale avec info utilisateur -->
-    <left>
-        <VBox style="-fx-background-color: #34495e; -fx-padding: 20;" spacing="20" prefWidth="250">
-            <!-- Info utilisateur -->
-            <VBox spacing="10" alignment="CENTER">
-                <VBox style="-fx-background-color: #3498db; -fx-min-width: 80; -fx-min-height: 80; -fx-background-radius: 40;"
-                      alignment="CENTER">
-                    <Label text="👤" style="-fx-font-size: 30;" />
-                </VBox>
-                <Label fx:id="welcomeLabel" text="Bienvenue !" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"
-                       wrapText="true" textAlignment="CENTER" />
-                <Label fx:id="userEmailLabel" text="email@exemple.com" style="-fx-text-fill: #bdc3c7; -fx-font-size: 14;" />
-            </VBox>
+    <Label fx:id="welcomeLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <Label fx:id="userEmailLabel"/>
 
-            <!-- Statistiques -->
-            <VBox spacing="15">
-                <Label text="📊 Mes statistiques" style="-fx-text-fill: white; -fx-font-weight: bold;" />
-                <HBox spacing="10" alignment="CENTER">
-                    <VBox alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 5; -fx-padding: 10;"
-                          prefWidth="70">
-                        <Label text="🎥" style="-fx-font-size: 20;" />
-                        <Label text="0" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" />
-                        <Label text="Films" style="-fx-text-fill: #bdc3c7; -fx-font-size: 12;" />
-                    </VBox>
-                    <VBox alignment="CENTER" style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 5; -fx-padding: 10;"
-                          prefWidth="70">
-                        <Label text="⭐" style="-fx-font-size: 20;" />
-                        <Label text="0.0" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;" />
-                        <Label text="Moyenne" style="-fx-text-fill: #bdc3c7; -fx-font-size: 12;" />
-                    </VBox>
-                </HBox>
-            </VBox>
-
-            <!-- Filtres rapides -->
-            <VBox spacing="10">
-                <Label text="🎭 Genres préférés" style="-fx-text-fill: white; -fx-font-weight: bold;" />
-                <VBox spacing="5">
-                    <CheckBox text="Action" style="-fx-text-fill: #ecf0f1;" />
-                    <CheckBox text="Science-Fiction" style="-fx-text-fill: #ecf0f1;" />
-                    <CheckBox text="Drame" style="-fx-text-fill: #ecf0f1;" />
-                    <CheckBox text="Comédie" style="-fx-text-fill: #ecf0f1;" />
-                </VBox>
-            </VBox>
-        </VBox>
-    </left>
-
-    <!-- CENTER: Contenu principal -->
-    <center>
-        <ScrollPane fitToWidth="true" style="-fx-background: white; -fx-border-color: transparent;">
-            <VBox fx:id="mainContent" spacing="20" style="-fx-padding: 25;" />
-        </ScrollPane>
-    </center>
-
-    <!-- BOTTOM: Footer -->
-    <bottom>
-        <HBox style="-fx-background-color: #ecf0f1; -fx-padding: 10;" alignment="CENTER">
-            <Label text="© 2024 CinéApp - Recommandations de films personnalisées"
-                   style="-fx-text-fill: #7f8c8d; -fx-font-size: 12;" />
-        </HBox>
-    </bottom>
-
-</BorderPane>
+    <VBox fx:id="mainContent" spacing="10"/>
+</VBox>

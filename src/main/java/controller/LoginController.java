@@ -5,9 +5,7 @@ import service.SessionService;
 import service.UserService;
 import model.User;
 import javafx.fxml.FXML;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
 public class LoginController {
 
@@ -23,20 +21,12 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (userService.login(email, password)) {
-            // Récupérer l'utilisateur de la base
             User user = userService.getUserByEmail(email);
-
-            if (user != null) {
-                // Stocker dans la session
-                SessionService.getInstance().setCurrentUser(user);
-
-                // Naviguer vers le dashboard
-                SceneManager.getInstance().switchTo("dashboard");
-                return;
-            }
+            SessionService.getInstance().setCurrentUser(user);
+            SceneManager.getInstance().switchTo("dashboard");
+        } else {
+            messageLabel.setText("Email ou mot de passe incorrect.");
         }
-
-        messageLabel.setText("Email ou mot de passe incorrect.");
     }
 
     @FXML
