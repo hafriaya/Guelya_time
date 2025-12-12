@@ -6,7 +6,6 @@ import service.UserService;
 import model.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import java.time.LocalDate;
 
 public class RegisterController {
 
@@ -28,13 +27,13 @@ public class RegisterController {
             return;
         }
 
-        User user = new User(name, email, password, LocalDate.now());
+        User user = new User(email, password, name);
 
         if (userService.register(user)) {
             SessionService.getInstance().setCurrentUser(user);
             SceneManager.getInstance().switchTo("dashboard");
         } else {
-            messageLabel.setText("Erreur lors de l'inscription.");
+            messageLabel.setText("Cet email existe déjà.");
         }
     }
 
