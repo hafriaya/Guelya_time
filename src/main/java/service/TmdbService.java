@@ -35,14 +35,4 @@ public class TmdbService {
     return fetchMovieList(url);
     }
 
-//fetch movie list from TMDB API
-private List<Film> fetchMovieList(String url) {
-    try {
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", "Mozilla/5.0");
-        con.setRequestProperty("Accept", "application/json");
-        con.setRequestProperty("Accept-Language", "fr-FR,fr;q=0.8,en-US;q=0.6,en;q=0.4");
-        con.setRequestProperty("Accept-Encoding", "gzip, deflate, br");
 }
