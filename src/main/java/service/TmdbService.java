@@ -6,17 +6,16 @@ public class TmdbService {
 
     
     // Get popular movies
-    public List<Film> getPopularMovies() {
-        String url = BASE_URL + "/movie/popular?api_key=" + API_KEY;
-        return fetchFilms(url);
+    public List<Film> getPopularMovies(int page) {
+    String url = BASE_URL + "/movie/popular?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+    return fetchMovieList(url);
     }
 
     // Get top rated movies
-    public List<Film> getTopRatedMovies() {
-        String url = BASE_URL + "/movie/top_rated?api_key=" + API_KEY;
-        return fetchFilms(url);
+    public List<Film> getTopRatedMovies(int page) {
+    String url = BASE_URL + "/movie/top_rated?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+    return fetchMovieList(url);
     }
-
 
     //search movies 
     public List<Film> searchMovies(String query, int page) {
