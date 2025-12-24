@@ -5,5 +5,9 @@ public class TmdbService {
     private static final String BASE_URL = "https://api.themoviedb.org/3";
 
     
-    
+    // Get popular movies
+    public List<Film> getPopularMovies() {
+        String url = BASE_URL + "/movie/popular?api_key=" + API_KEY;
+        return fetchFilms(url);
+    }
 }
