@@ -10,4 +10,10 @@ public class TmdbService {
         String url = BASE_URL + "/movie/popular?api_key=" + API_KEY;
         return fetchFilms(url);
     }
+
+    // Get top rated movies
+    public List<Film> getTopRatedMovies() {
+        String url = BASE_URL + "/movie/top_rated?api_key=" + API_KEY;
+        return fetchFilms(url);
+    }
 }
