@@ -16,4 +16,12 @@ public class TmdbService {
         String url = BASE_URL + "/movie/top_rated?api_key=" + API_KEY;
         return fetchFilms(url);
     }
+
+
+    //search movies 
+    public List<Film> searchMovies(String query, int page) {
+    String encodedQuery = URLEncoder.encode(query, "UTF-8");
+    String url = BASE_URL + "/search/movie?api_key=" + API_KEY + "&query=" + encodedQuery;
+    return fetchMovieList(url);
+}
 }
