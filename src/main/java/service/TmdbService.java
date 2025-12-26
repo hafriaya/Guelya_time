@@ -107,7 +107,7 @@ public class TmdbService {
         e.printStackTrace();
         return null;
     }
-}
+    }
 
 
     // parse movies 
@@ -134,4 +134,36 @@ public class TmdbService {
         return null;
     }
     }
+
+
+    //extraire string 
+    private String extractString(String json, String key) {
+    String searchKey = "\"" + key + "\":";
+    int keyIndex = json.indexOf(searchKey);
+    if (keyIndex == -1) return null;
+
+    int valueStart = keyIndex + searchKey.length();
+    while (valueStart < json.length() && Character.isWhitespace(json.charAt(valueStart))) {
+        valueStart++;
+    }
+
+    if (valueStart >= json.length()) return null;
+    char firstChar = json.charAt(valueStart);
+    if (firstChar == 'n') return null;
+    if (firstChar != '"') return null;
+
+    valueStart++;
+    StringBuilder value = new StringBuilder();
+    for (int i = valueStart; i < json.length(); i++) {
+        char c = json.charAt(i);
+        if (c == '"') break;
+        if (c == '\\' && i + 1 < json.length()) {
+            i++;
+            c = json.charAt(i);
+        }
+        value.append(c);
+    }
+    return value.toString();
+}
+
 }
