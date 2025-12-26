@@ -42,7 +42,7 @@ public class UserRepository {
                         "id",id,
                         "username", u.getUsername(),
                         "email", u.getEmail(),
-                        "passwordHash", u.getPassword(),
+                        "password", u.getPassword(),
                         "firstName", u.getFirstName(),
                         "lastName", u.getLastName(),
                         "createdAt", u.getCreatedAt().toString(),
