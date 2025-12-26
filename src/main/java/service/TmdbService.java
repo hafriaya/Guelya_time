@@ -96,4 +96,29 @@ public class TmdbService {
     }
 }
 
+
+    // parse movies 
+    private Film parseMovie(String json){
+        try {
+        Film film = new Film();
+        film.setId(extractLong(json, "id"));
+        film.setTitle(extractString(json, "title"));
+        film.setOverview(extractString(json, "overview"));
+        film.setPosterPath(extractString(json, "poster_path"));
+        film.setReleaseDate(extractString(json, "release_date"));
+        film.setVoteAverage(extractDouble(json, "vote_average"));
+        film.setVoteCount(extractInt(json, "vote_count"));
+        film.setPopularity(extractDouble(json, "popularity"));
+
+        List<Integer> genreIds = extractIntArray(json, "genre_ids");
+        for (int genreId : genreIds) {
+            film.getGenres().add(new Genre(genreId, null));
+        }
+
+        return film;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+    }
 }
