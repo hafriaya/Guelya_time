@@ -35,4 +35,25 @@ public class TmdbService {
     return fetchMovieList(url);
     }
 
+    //fetch movie list
+    private List <Film> fetchMovieList(String url) {
+        try {
+            String json = fetchJson(urlString);
+        if (json == null) return films;
+
+        int resultsStart = json.indexOf("\"results\":[");
+        if (resultsStart == -1) return films;
+
+        String resultsJson = json.substring(resultsStart + 11);
+
+        List<String> movieObjects = splitJsonArray(resultsJson);
+
+        for (String movieJson : movieObjects) {
+            Film film = parseMovie(movieJson);
+            if (film != null) {
+                films.add(film);
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
 }
