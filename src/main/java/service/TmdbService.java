@@ -1,5 +1,18 @@
 package service;
 
+import model.Film;
+import model.Genre;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
 public class TmdbService {
     private static final String API_KEY = "22c0aa4a342097dd598f010fd52eb22c";
     private static final String BASE_URL = "https://api.themoviedb.org/3";
