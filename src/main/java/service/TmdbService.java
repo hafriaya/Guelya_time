@@ -56,4 +56,44 @@ public class TmdbService {
         }
     } catch (Exception e) {
         e.printStackTrace();
+    }
+    }
+
+
+    //fetch json from url
+    private String fetchJson(String urlString) {
+    try {
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setConnectTimeout(10000);
+        conn.setReadTimeout(10000);
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode != 200) {
+            System.err.println("HTTP Error: " + responseCode);
+            return null;
+        }
+
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(conn.getInputStream())
+        );
+
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line);
+        }
+
+        reader.close();
+        conn.disconnect();
+
+        return response.toString();
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
 }
