@@ -82,13 +82,13 @@ public class UserService {
 
 
     }
-    public User register(String u,String e,String p,String f,String l)throws RegistrationException {
-        User user =register(u, e, p);
-        user.setFirstName(f);
-        user.setLastName(l);
-        userRepository.updateProfile(user);
-        return user;
-    }
+    // public User register(String u,String e,String p,String f,String l)throws RegistrationException {
+    //     User user =register(u, e, p);
+    //     user.setFirstName(f);
+    //     user.setLastName(l);
+    //     userRepository.updateProfile(user);
+    //     return user;
+    // }
     
     //authentification
     public Optional<User> login(String ue, String p){
