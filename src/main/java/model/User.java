@@ -19,10 +19,10 @@ public class User {
         this.favoriteGenres = new ArrayList<>();
     
     }
-    public User(String username, String email, String passwordHash) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
-        this.password = passwordHash;
+        this.password = password;
         this.createdAt = LocalDateTime.now();
         this.favoriteGenres = new ArrayList<>();
     }
