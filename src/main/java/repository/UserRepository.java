@@ -61,7 +61,7 @@ public class UserRepository {
         user.setId(node.get("id").asString());
         user.setUsername(node.get("username").asString());
         user.setEmail(node.get("email").asString());
-        user.setPassword(node.get("passwordHash").asString());
+        user.setPassword(node.get("password").asString());
 
         // Handle optional fields
         if (!node.get("firstName").isNull()) {
