@@ -276,4 +276,208 @@ public class TmdbService {
         }
         return objects;
     }
+
+    // ==================== MOVIE DETAILS ====================
+
+    /**
+     * Get detailed information about a specific movie
+     */
+    public Film getMovieDetails(long movieId) {
+        String url = BASE_URL + "/movie/" + movieId + "?api_key=" + API_KEY + "&language=fr-FR";
+        String json = fetchJson(url);
+        if (json == null) return null;
+
+        return parseMovieDetails(json);
+    }
+
+    /**
+     * Parse movie details (includes full genre objects, not just IDs)
+     */
+    private Film parseMovieDetails(String json) {
+        try {
+            Film film = new Film();
+            film.setId(extractLong(json, "id"));
+            film.setTitle(extractString(json, "title"));
+            film.setOverview(extractString(json, "overview"));
+            film.setPosterPath(extractString(json, "poster_path"));
+            film.setReleaseDate(extractString(json, "release_date"));
+            film.setVoteAverage(extractDouble(json, "vote_average"));
+            film.setVoteCount(extractInt(json, "vote_count"));
+            film.setPopularity(extractDouble(json, "popularity"));
+
+            // Parse full genre objects
+            List<Genre> genres = extractGenres(json);
+            film.setGenres(genres);
+
+            return film;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Extract genres array with full objects (id and name)
+     */
+    private List<Genre> extractGenres(String json) {
+        List<Genre> genres = new ArrayList<>();
+        String searchKey = "\"genres\":[";
+        int keyIndex = json.indexOf(searchKey);
+        if (keyIndex == -1) return genres;
+
+        int arrayStart = keyIndex + searchKey.length();
+        int depth = 1;
+        int arrayEnd = arrayStart;
+
+        for (int i = arrayStart; i < json.length() && depth > 0; i++) {
+            char c = json.charAt(i);
+            if (c == '[') depth++;
+            else if (c == ']') depth--;
+            arrayEnd = i;
+        }
+
+        String genresJson = json.substring(arrayStart, arrayEnd);
+        List<String> genreObjects = splitJsonArray("{" + genresJson + "}");
+
+        for (String genreJson : genreObjects) {
+            int id = extractInt(genreJson, "id");
+            String name = extractString(genreJson, "name");
+            if (id > 0) {
+                genres.add(new Genre(id, name));
+            }
+        }
+
+        return genres;
+    }
+
+    // ==================== MOVIE CREDITS (CAST) ====================
+
+    /**
+     * Get movie credits (cast and crew)
+     */
+    public List<model.Acteur> getMovieCredits(long movieId) {
+        String url = BASE_URL + "/movie/" + movieId + "/credits?api_key=" + API_KEY + "&language=fr-FR";
+        String json = fetchJson(url);
+        if (json == null) return new ArrayList<>();
+
+        return parseCast(json);
+    }
+
+    /**
+     * Parse cast from credits JSON
+     */
+    private List<model.Acteur> parseCast(String json) {
+        List<model.Acteur> cast = new ArrayList<>();
+
+        String searchKey = "\"cast\":[";
+        int keyIndex = json.indexOf(searchKey);
+        if (keyIndex == -1) return cast;
+
+        int arrayStart = keyIndex + searchKey.length();
+        String castJson = json.substring(arrayStart);
+
+        List<String> castObjects = splitJsonArray(castJson);
+
+        // Limit to top 10 cast members
+        int limit = Math.min(castObjects.size(), 10);
+        for (int i = 0; i < limit; i++) {
+            String actorJson = castObjects.get(i);
+            model.Acteur actor = parseActor(actorJson);
+            if (actor != null) {
+                cast.add(actor);
+            }
+        }
+
+        return cast;
+    }
+
+    /**
+     * Parse a single actor from JSON
+     */
+    private model.Acteur parseActor(String json) {
+        try {
+            String id = String.valueOf(extractLong(json, "id"));
+            String name = extractString(json, "name");
+            String profilePath = extractString(json, "profile_path");
+            String character = extractString(json, "character");
+
+            return new model.Acteur(id, name, profilePath, character);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // ==================== ALL GENRES ====================
+
+    /**
+     * Get all movie genres from TMDB
+     */
+    public List<Genre> getAllGenres() {
+        String url = BASE_URL + "/genre/movie/list?api_key=" + API_KEY + "&language=fr-FR";
+        String json = fetchJson(url);
+        if (json == null) return new ArrayList<>();
+
+        return extractGenres(json);
+    }
+
+    // ==================== SIMILAR MOVIES ====================
+
+    /**
+     * Get similar movies from TMDB
+     */
+    public List<Film> getSimilarMovies(long movieId, int page) {
+        String url = BASE_URL + "/movie/" + movieId + "/similar?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        return fetchMovieList(url);
+    }
+
+    /**
+     * Get movie recommendations from TMDB (based on the movie)
+     */
+    public List<Film> getMovieRecommendations(long movieId, int page) {
+        String url = BASE_URL + "/movie/" + movieId + "/recommendations?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        return fetchMovieList(url);
+    }
+
+    // ==================== NOW PLAYING & UPCOMING ====================
+
+    /**
+     * Get now playing movies
+     */
+    public List<Film> getNowPlayingMovies(int page) {
+        String url = BASE_URL + "/movie/now_playing?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        return fetchMovieList(url);
+    }
+
+    /**
+     * Get upcoming movies
+     */
+    public List<Film> getUpcomingMovies(int page) {
+        String url = BASE_URL + "/movie/upcoming?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        return fetchMovieList(url);
+    }
+
+    // ==================== IMAGE URLS ====================
+
+    /**
+     * Get full poster URL
+     */
+    public static String getPosterUrl(String posterPath, String size) {
+        if (posterPath == null || posterPath.isEmpty()) {
+            return null;
+        }
+        // Sizes: w92, w154, w185, w342, w500, w780, original
+        return "https://image.tmdb.org/t/p/" + size + posterPath;
+    }
+
+    /**
+     * Get full profile URL for actors
+     */
+    public static String getProfileUrl(String profilePath, String size) {
+        if (profilePath == null || profilePath.isEmpty()) {
+            return null;
+        }
+        // Sizes: w45, w185, h632, original
+        return "https://image.tmdb.org/t/p/" + size + profilePath;
+    }
 }
