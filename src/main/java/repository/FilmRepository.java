@@ -17,7 +17,7 @@ public class FilmRepository {
         this.driver = Neo4jConfig.getDriver();
     }
     //save and update film in neo4j
-    public  Film Save(Film film) {
+    public Film save(Film film) {
         try (Session session = driver.session()) {
             String query = """
                 MERGE (f:Film {id: $id})
@@ -165,6 +165,24 @@ public class FilmRepository {
                 """;
             session.run(query, Values.parameters("userId", userId, "filmId", filmId));
         }
+    }
+
+    // Get user's favorite films
+    public List<Film> getUserFavorites(String userId) {
+        List<Film> films = new ArrayList<>();
+        try (Session session = driver.session()) {
+            String query = """
+                MATCH (u:User {id: $userId})-[:FAVORITED]->(f:Film)
+                OPTIONAL MATCH (f)-[:HAS_GENRE]->(g:Genre)
+                RETURN f, collect(g) as genres
+                ORDER BY f.title
+                """;
+            Result result = session.run(query, Values.parameters("userId", userId));
+            while (result.hasNext()) {
+                films.add(mapRecordToFilm(result.next()));
+            }
+        }
+        return films;
     }
 
     // Rate a film

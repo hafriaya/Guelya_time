@@ -302,7 +302,27 @@ public class TmdbService {
     private Film parseMovieDetails(String json) {
         try {
             Film film = new Film();
-            film.setId(extractLong(json, "id"));
+            
+            // Extract movie ID before genres section to avoid confusion with genre IDs
+            // Find "id": at the start of the JSON (movie's ID comes first in TMDB response)
+            int firstIdIndex = json.indexOf("\"id\":");
+            int genresIndex = json.indexOf("\"genres\":");
+            
+            // If id comes before genres, extract it directly
+            if (firstIdIndex != -1 && (genresIndex == -1 || firstIdIndex < genresIndex)) {
+                film.setId(extractLong(json.substring(0, genresIndex != -1 ? genresIndex : json.length()), "id"));
+            } else {
+                // Fallback: try to find id after adult field which is typically near the start
+                int adultIndex = json.indexOf("\"adult\":");
+                if (adultIndex != -1) {
+                    String afterAdult = json.substring(adultIndex);
+                    int idInAfterAdult = afterAdult.indexOf("\"id\":");
+                    if (idInAfterAdult != -1) {
+                        film.setId(extractLong(afterAdult.substring(idInAfterAdult), "id"));
+                    }
+                }
+            }
+            
             film.setTitle(extractString(json, "title"));
             film.setOverview(extractString(json, "overview"));
             film.setPosterPath(extractString(json, "poster_path"));
