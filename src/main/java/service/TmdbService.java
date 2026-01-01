@@ -1,5 +1,6 @@
 package service;
 
+import config.Neo4jConfig;
 import model.Film;
 import model.Genre;
 
@@ -12,18 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TmdbService {
-    private static final String API_KEY = "22c0aa4a342097dd598f010fd52eb22c";
-    private static final String BASE_URL = "https://api.themoviedb.org/3";
+    private final String apiKey;
+    private final String baseUrl;
+
+    public TmdbService() {
+        this.apiKey = Neo4jConfig.getProperty("tmdb.api.key", "22c0aa4a342097dd598f010fd52eb22c");
+        this.baseUrl = Neo4jConfig.getProperty("tmdb.base.url", "https://api.themoviedb.org/3");
+    }
 
     // Get popular movies
     public List<Film> getPopularMovies(int page) {
-        String url = BASE_URL + "/movie/popular?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        String url = baseUrl + "/movie/popular?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
     }
 
     // Get top rated movies
     public List<Film> getTopRatedMovies(int page) {
-        String url = BASE_URL + "/movie/top_rated?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        String url = baseUrl + "/movie/top_rated?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
     }
 
@@ -31,7 +37,7 @@ public class TmdbService {
     public List<Film> searchMovies(String query, int page) {
         try {
             String encodedQuery = URLEncoder.encode(query, "UTF-8");
-            String url = BASE_URL + "/search/movie?api_key=" + API_KEY + "&language=fr-FR&query=" + encodedQuery + "&page=" + page;
+            String url = baseUrl + "/search/movie?api_key=" + apiKey + "&language=fr-FR&query=" + encodedQuery + "&page=" + page;
             return fetchMovieList(url);
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,7 +52,7 @@ public class TmdbService {
             if (i > 0) genres.append(",");
             genres.append(genreIds.get(i));
         }
-        String url = BASE_URL + "/discover/movie?api_key=" + API_KEY + "&language=fr-FR&sort_by=popularity.desc&with_genres=" + genres.toString() + "&page=" + page;
+        String url = baseUrl + "/discover/movie?api_key=" + apiKey + "&language=fr-FR&sort_by=popularity.desc&with_genres=" + genres.toString() + "&page=" + page;
         return fetchMovieList(url);
     }
 
@@ -283,7 +289,7 @@ public class TmdbService {
      * Get detailed information about a specific movie
      */
     public Film getMovieDetails(long movieId) {
-        String url = BASE_URL + "/movie/" + movieId + "?api_key=" + API_KEY + "&language=fr-FR";
+        String url = baseUrl + "/movie/" + movieId + "?api_key=" + apiKey + "&language=fr-FR";
         String json = fetchJson(url);
         if (json == null) return null;
 
@@ -356,7 +362,7 @@ public class TmdbService {
      * Get movie credits (cast and crew)
      */
     public List<model.Acteur> getMovieCredits(long movieId) {
-        String url = BASE_URL + "/movie/" + movieId + "/credits?api_key=" + API_KEY + "&language=fr-FR";
+        String url = baseUrl + "/movie/" + movieId + "/credits?api_key=" + apiKey + "&language=fr-FR";
         String json = fetchJson(url);
         if (json == null) return new ArrayList<>();
 
@@ -414,7 +420,7 @@ public class TmdbService {
      * Get all movie genres from TMDB
      */
     public List<Genre> getAllGenres() {
-        String url = BASE_URL + "/genre/movie/list?api_key=" + API_KEY + "&language=fr-FR";
+        String url = baseUrl + "/genre/movie/list?api_key=" + apiKey + "&language=fr-FR";
         String json = fetchJson(url);
         if (json == null) return new ArrayList<>();
 
@@ -427,7 +433,7 @@ public class TmdbService {
      * Get similar movies from TMDB
      */
     public List<Film> getSimilarMovies(long movieId, int page) {
-        String url = BASE_URL + "/movie/" + movieId + "/similar?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        String url = baseUrl + "/movie/" + movieId + "/similar?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
     }
 
@@ -435,7 +441,7 @@ public class TmdbService {
      * Get movie recommendations from TMDB (based on the movie)
      */
     public List<Film> getMovieRecommendations(long movieId, int page) {
-        String url = BASE_URL + "/movie/" + movieId + "/recommendations?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        String url = baseUrl + "/movie/" + movieId + "/recommendations?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
     }
 
@@ -445,7 +451,7 @@ public class TmdbService {
      * Get now playing movies
      */
     public List<Film> getNowPlayingMovies(int page) {
-        String url = BASE_URL + "/movie/now_playing?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        String url = baseUrl + "/movie/now_playing?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
     }
 
@@ -453,7 +459,7 @@ public class TmdbService {
      * Get upcoming movies
      */
     public List<Film> getUpcomingMovies(int page) {
-        String url = BASE_URL + "/movie/upcoming?api_key=" + API_KEY + "&language=fr-FR&page=" + page;
+        String url = baseUrl + "/movie/upcoming?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
     }
 
