@@ -94,8 +94,8 @@ public class LoginController {
                         SessionService.getInstance().setCurrentUser(user);
                         System.out.println("Login successful for user: " + user.getUsername());
                         
-                        // Navigate to dashboard
-                        SceneManager.getInstance().switchTo("dashboard");
+                        // Go to onboarding to select favorite movies
+                        SceneManager.getInstance().switchTo("onboarding");
                     } else {
                         showError("Nom d'utilisateur/email ou mot de passe incorrect.");
                         passwordField.clear();
