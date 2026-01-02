@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" 
+            fx:controller="controller.DashboardController"
+            prefWidth="900" 
+            prefHeight="600"
+            style="-fx-background-color: #1a1a2e;">
+    
+    <!-- Top bar -->
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #16213e; -fx-padding: 15;">
+            <Label text="FilmApp" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            
+            <TextField fx:id="searchField" 
+                       promptText="Rechercher un film..." 
+                       prefWidth="300"
+                       onAction="#handleSearch"/>
+            
+            <Button text="Rechercher" onAction="#handleSearch" style="-fx-background-color: #e94560; -fx-text-fill: white;"/>
+            
+            <Region HBox.hgrow="ALWAYS"/>
+            
+            <Label fx:id="usernameLabel" style="-fx-text-fill: white;"/>
+            <Button text="Déconnexion" onAction="#handleLogout" style="-fx-background-color: transparent; -fx-text-fill: #aaa;"/>
+        </HBox>
+    </top>
+    
+    <!-- Left menu -->
+    <left>
+        <VBox spacing="10" style="-fx-background-color: #16213e; -fx-padding: 20;">
+            <Button text="Accueil" onAction="#showHome" prefWidth="120" style="-fx-background-color: #e94560; -fx-text-fill: white;"/>
+            <Button text="Populaires" onAction="#showPopular" prefWidth="120" style="-fx-background-color: transparent; -fx-text-fill: white;"/>
+            <Button text="Ma Liste" onAction="#showWatchlist" prefWidth="120" style="-fx-background-color: transparent; -fx-text-fill: white;"/>
+            <Button text="Favoris" onAction="#showFavorites" prefWidth="120" style="-fx-background-color: transparent; -fx-text-fill: white;"/>
+        </VBox>
+    </left>
+    
+    <!-- Main content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background: #1a1a2e; -fx-background-color: #1a1a2e;">
+            <VBox fx:id="contentArea" spacing="20" style="-fx-padding: 20;">
+                <Label fx:id="sectionTitle" text="Films Populaires" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <FlowPane fx:id="filmsContainer" hgap="15" vgap="15"/>
+                <Label fx:id="loadingLabel" text="Chargement..." style="-fx-text-fill: #888;" visible="false"/>
+            </VBox>
+        </ScrollPane>
+    </center>
+    
+</BorderPane>
