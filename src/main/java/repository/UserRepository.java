@@ -58,31 +58,56 @@ public class UserRepository {
         var node = record.get("u").asNode();
 
         User user = new User();
-        user.setId(node.get("id").asString());
-        user.setUsername(node.get("username").asString());
-        user.setEmail(node.get("email").asString());
-        user.setPassword(node.get("password").asString());
+        
+        // Handle id - could be string or integer
+        user.setId(getAsString(node, "id"));
+        user.setUsername(getAsString(node, "username"));
+        user.setEmail(getAsString(node, "email"));
+        user.setPassword(getAsString(node, "password"));
 
         // Handle optional fields
         if (!node.get("firstName").isNull()) {
-            user.setFirstName(node.get("firstName").asString());
+            user.setFirstName(getAsString(node, "firstName"));
         }
         if (!node.get("lastName").isNull()) {
-            user.setLastName(node.get("lastName").asString());
+            user.setLastName(getAsString(node, "lastName"));
         }
         if (!node.get("createdAt").isNull()) {
-            user.setCreatedAt(LocalDateTime.parse(node.get("createdAt").asString()));
+            try {
+                user.setCreatedAt(LocalDateTime.parse(getAsString(node, "createdAt")));
+            } catch (Exception e) {
+                // ignore parse errors
+            }
         }
         if (!node.get("lastLogin").isNull()) {
-            user.setLastLogin(LocalDateTime.parse(node.get("lastLogin").asString()));
+            try {
+                user.setLastLogin(LocalDateTime.parse(getAsString(node, "lastLogin")));
+            } catch (Exception e) {
+                // ignore parse errors
+            }
         }
         if (!node.get("favoriteGenres").isNull()) {
             List<String> genres = new ArrayList<>();
-            node.get("favoriteGenres").asList(Value::asString).forEach(genres::add);
+            try {
+                node.get("favoriteGenres").asList(v -> v.asObject().toString()).forEach(genres::add);
+            } catch (Exception e) {
+                // ignore if format is different
+            }
             user.setFavoriteGenres(genres);
         }
 
         return user;
+    }
+    
+    // helper to get value as string regardless of type
+    private String getAsString(org.neo4j.driver.types.Node node, String key) {
+        Value value = node.get(key);
+        if (value.isNull()) {
+            return null;
+        }
+        // convert any type to string
+        Object obj = value.asObject();
+        return obj != null ? obj.toString() : null;
     }
 
     //find user by username
