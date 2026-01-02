@@ -275,6 +275,20 @@ public class FilmService {
         return genreRepository.findAll();
     }
 
+    // Sync all genres from TMDB to database (call this to fix empty genre names)
+    public void syncGenresFromTmdb() {
+        List<Genre> tmdbGenres = tmdbService.getAllGenres();
+        if (!tmdbGenres.isEmpty()) {
+            genreRepository.saveAll(tmdbGenres);
+            System.out.println("Synced " + tmdbGenres.size() + " genres from TMDB to database");
+        }
+    }
+
+    // Get all genres from TMDB (without saving to database)
+    public List<Genre> getAllGenresFromTmdb() {
+        return tmdbService.getAllGenres();
+    }
+
     // ==================== UTILITY METHODS ====================
 
     // Validate user ID and film ID
