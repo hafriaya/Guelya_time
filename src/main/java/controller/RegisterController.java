@@ -56,14 +56,6 @@ public class RegisterController {
             showError("Le mot de passe est requis");
             return;
         }
-        if (password.length() < 6) {
-            showError("Le mot de passe doit avoir au moins 6 caractères");
-            return;
-        }
-        if (!password.equals(confirmPassword)) {
-            showError("Les mots de passe ne correspondent pas");
-            return;
-        }
         
         try {
             userService.register(username, email, password);
