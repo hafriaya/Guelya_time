@@ -10,15 +10,103 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TmdbService {
     private final String apiKey;
     private final String baseUrl;
+    private static Map<Integer, String> genreCache; // Static cache shared across instances
 
     public TmdbService() {
         this.apiKey = Neo4jConfig.getProperty("tmdb.api.key", "22c0aa4a342097dd598f010fd52eb22c");
         this.baseUrl = Neo4jConfig.getProperty("tmdb.base.url", "https://api.themoviedb.org/3");
+    }
+
+    /**
+     * Get genre map (ID -> Name) from TMDB, cached for performance
+     */
+    public Map<Integer, String> getGenreMap() {
+        if (genreCache != null && !genreCache.isEmpty()) {
+            return genreCache;
+        }
+        
+        genreCache = new HashMap<>();
+        String url = baseUrl + "/genre/movie/list?api_key=" + apiKey + "&language=fr-FR";
+        
+        try {
+            String json = fetchJson(url);
+            if (json == null) return genreCache;
+            
+            // Parse the genres array directly
+            String searchKey = "\"genres\":[";
+            int keyIndex = json.indexOf(searchKey);
+            if (keyIndex == -1) return genreCache;
+
+            int arrayStart = keyIndex + searchKey.length();
+            int arrayEnd = json.indexOf(']', arrayStart);
+            if (arrayEnd == -1) return genreCache;
+
+            String genresArrayContent = json.substring(arrayStart, arrayEnd);
+            
+            // Split by },{ to get individual genre objects
+            String[] genreStrings = genresArrayContent.split("\\},\\s*\\{");
+            
+            for (String genreStr : genreStrings) {
+                // Clean up the string
+                genreStr = genreStr.replace("{", "").replace("}", "");
+                
+                int id = 0;
+                String name = null;
+                
+                // Extract id
+                int idIndex = genreStr.indexOf("\"id\":");
+                if (idIndex != -1) {
+                    int idStart = idIndex + 5;
+                    StringBuilder idBuilder = new StringBuilder();
+                    for (int i = idStart; i < genreStr.length(); i++) {
+                        char c = genreStr.charAt(i);
+                        if (Character.isDigit(c)) {
+                            idBuilder.append(c);
+                        } else if (idBuilder.length() > 0) {
+                            break;
+                        }
+                    }
+                    if (idBuilder.length() > 0) {
+                        id = Integer.parseInt(idBuilder.toString());
+                    }
+                }
+                
+                // Extract name
+                int nameIndex = genreStr.indexOf("\"name\":\"");
+                if (nameIndex != -1) {
+                    int nameStart = nameIndex + 8;
+                    int nameEnd = genreStr.indexOf("\"", nameStart);
+                    if (nameEnd != -1) {
+                        name = genreStr.substring(nameStart, nameEnd);
+                    }
+                }
+                
+                if (id > 0 && name != null && !name.isEmpty()) {
+                    genreCache.put(id, name);
+                }
+            }
+            
+            System.out.println("Loaded " + genreCache.size() + " genres into cache");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return genreCache;
+    }
+
+    /**
+     * Clear the genre cache (useful for testing or refreshing)
+     */
+    public static void clearGenreCache() {
+        genreCache = null;
     }
 
     // Get popular movies
@@ -131,9 +219,13 @@ public class TmdbService {
             film.setVoteCount(extractInt(json, "vote_count"));
             film.setPopularity(extractDouble(json, "popularity"));
 
+            // Load genre names from cache
+            Map<Integer, String> genreMap = getGenreMap();
+            
             List<Integer> genreIds = extractIntArray(json, "genre_ids");
             for (int genreId : genreIds) {
-                film.getGenres().add(new Genre(genreId, null));
+                String genreName = genreMap.getOrDefault(genreId, "Unknown");
+                film.getGenres().add(new Genre(genreId, genreName));
             }
 
             return film;
@@ -437,14 +529,17 @@ public class TmdbService {
     // ==================== ALL GENRES ====================
 
     /**
-     * Get all movie genres from TMDB
+     * Get all movie genres from TMDB (uses cache)
      */
     public List<Genre> getAllGenres() {
-        String url = baseUrl + "/genre/movie/list?api_key=" + apiKey + "&language=fr-FR";
-        String json = fetchJson(url);
-        if (json == null) return new ArrayList<>();
-
-        return extractGenres(json);
+        List<Genre> genres = new ArrayList<>();
+        Map<Integer, String> genreMap = getGenreMap();
+        
+        for (Map.Entry<Integer, String> entry : genreMap.entrySet()) {
+            genres.add(new Genre(entry.getKey(), entry.getValue()));
+        }
+        
+        return genres;
     }
 
     // ==================== SIMILAR MOVIES ====================
