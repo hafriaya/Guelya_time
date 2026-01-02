@@ -22,8 +22,12 @@ public class DashboardController {
     @FXML private FlowPane filmsContainer;
     @FXML private Label loadingLabel;
     @FXML private VBox contentArea;
+    @FXML private Button showMoreButton;
     
     private FilmService filmService;
+    private int currentPage = 1;
+    private String currentSection = "popular";
+    private String currentSearchQuery = "";
     
     public DashboardController() {
         this.filmService = new FilmService();
@@ -34,7 +38,7 @@ public class DashboardController {
         // show current user
         User user = SessionService.getInstance().getCurrentUser();
         if (user != null) {
-            usernameLabel.setText("Bonjour, " + user.getUsername());
+            usernameLabel.setText("Hello, " + user.getUsername());
         }
         
         // load popular films
@@ -43,31 +47,47 @@ public class DashboardController {
     
     @FXML
     private void showHome() {
-        sectionTitle.setText("Recommandations");
-        loadFilms(() -> filmService.getPopularFilms(1));
+        currentSection = "home";
+        currentPage = 1;
+        sectionTitle.setText("Recommendations");
+        filmsContainer.getChildren().clear();
+        loadFilms(false);
     }
     
     @FXML
     private void showPopular() {
-        sectionTitle.setText("Films Populaires");
-        loadFilms(() -> filmService.getPopularFilms(1));
+        currentSection = "popular";
+        currentPage = 1;
+        sectionTitle.setText("Popular Movies");
+        filmsContainer.getChildren().clear();
+        loadFilms(false);
     }
     
     @FXML
     private void showWatchlist() {
-        sectionTitle.setText("Ma Liste");
+        currentSection = "watchlist";
+        currentPage = 1;
+        sectionTitle.setText("My List");
+        filmsContainer.getChildren().clear();
+        showMoreButton.setVisible(false);
+        
         User user = SessionService.getInstance().getCurrentUser();
         if (user != null) {
-            loadFilms(() -> filmService.getUserWatchlist(user.getId()));
+            loadUserList(() -> filmService.getUserWatchlist(user.getId()));
         }
     }
     
     @FXML
     private void showFavorites() {
-        sectionTitle.setText("Mes Favoris");
+        currentSection = "favorites";
+        currentPage = 1;
+        sectionTitle.setText("Favorites");
+        filmsContainer.getChildren().clear();
+        showMoreButton.setVisible(false);
+        
         User user = SessionService.getInstance().getCurrentUser();
         if (user != null) {
-            loadFilms(() -> filmService.getUserFavorites(user.getId()));
+            loadUserList(() -> filmService.getUserFavorites(user.getId()));
         }
     }
     
@@ -75,9 +95,19 @@ public class DashboardController {
     private void handleSearch() {
         String query = searchField.getText().trim();
         if (!query.isEmpty()) {
-            sectionTitle.setText("Résultats pour: " + query);
-            loadFilms(() -> filmService.searchFilms(query, 1));
+            currentSection = "search";
+            currentSearchQuery = query;
+            currentPage = 1;
+            sectionTitle.setText("Results for: " + query);
+            filmsContainer.getChildren().clear();
+            loadFilms(false);
         }
+    }
+    
+    @FXML
+    private void loadMoreMovies() {
+        currentPage++;
+        loadFilms(true);
     }
     
     @FXML
@@ -86,8 +116,43 @@ public class DashboardController {
         SceneManager.getInstance().switchTo("login");
     }
     
-    private void loadFilms(FilmLoader loader) {
-        filmsContainer.getChildren().clear();
+    private void loadFilms(boolean append) {
+        loadingLabel.setVisible(true);
+        showMoreButton.setDisable(true);
+        
+        new Thread(() -> {
+            try {
+                List<Film> films;
+                
+                switch (currentSection) {
+                    case "search":
+                        films = filmService.searchFilms(currentSearchQuery, currentPage);
+                        break;
+                    case "home":
+                    case "popular":
+                    default:
+                        films = filmService.getPopularFilms(currentPage);
+                        break;
+                }
+                
+                Platform.runLater(() -> {
+                    loadingLabel.setVisible(false);
+                    displayFilms(films, append);
+                    showMoreButton.setVisible(true);
+                    showMoreButton.setDisable(false);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadingLabel.setText("Error loading movies");
+                    loadingLabel.setVisible(true);
+                    showMoreButton.setDisable(false);
+                });
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    
+    private void loadUserList(FilmLoader loader) {
         loadingLabel.setVisible(true);
         
         new Thread(() -> {
@@ -95,11 +160,11 @@ public class DashboardController {
                 List<Film> films = loader.load();
                 Platform.runLater(() -> {
                     loadingLabel.setVisible(false);
-                    displayFilms(films);
+                    displayFilms(films, false);
                 });
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    loadingLabel.setText("Erreur de chargement");
+                    loadingLabel.setText("Error loading movies");
                     loadingLabel.setVisible(true);
                 });
                 e.printStackTrace();
@@ -107,12 +172,15 @@ public class DashboardController {
         }).start();
     }
     
-    private void displayFilms(List<Film> films) {
-        filmsContainer.getChildren().clear();
+    private void displayFilms(List<Film> films, boolean append) {
+        if (!append) {
+            filmsContainer.getChildren().clear();
+        }
         
-        if (films.isEmpty()) {
-            loadingLabel.setText("Aucun film trouvé");
+        if (films.isEmpty() && filmsContainer.getChildren().isEmpty()) {
+            loadingLabel.setText("No movies found");
             loadingLabel.setVisible(true);
+            showMoreButton.setVisible(false);
             return;
         }
         
@@ -124,7 +192,7 @@ public class DashboardController {
     
     private VBox createFilmCard(Film film) {
         VBox card = new VBox(5);
-        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-cursor: hand;");
+        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8;");
         card.setPrefWidth(150);
         
         // poster image
