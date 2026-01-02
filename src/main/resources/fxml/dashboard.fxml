@@ -13,7 +13,7 @@
     <!-- Top bar -->
     <top>
         <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #16213e; -fx-padding: 15;">
-            <Label text="FilmApp" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="Guelya_time" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;"/>
             
             <TextField fx:id="searchField" 
                        promptText="Rechercher un film..." 
