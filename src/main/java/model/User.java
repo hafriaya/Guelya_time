@@ -14,6 +14,7 @@ public class User {
     private LocalDateTime createdAt;
     private LocalDateTime lastLogin;
     private List<String> favoriteGenres;
+    private boolean onboardingCompleted = false;
 
     public User(){
         this.favoriteGenres = new ArrayList<>();
@@ -109,6 +110,15 @@ public class User {
     public void setFavoriteGenres(List<String> favoriteGenres) {
         this.favoriteGenres = favoriteGenres;
     }
+
+    public boolean isOnboardingCompleted() {
+        return onboardingCompleted;
+    }
+
+    public void setOnboardingCompleted(boolean onboardingCompleted) {
+        this.onboardingCompleted = onboardingCompleted;
+    }
+
     public String getFullName() {
         if (firstName != null && lastName != null) {
             return firstName + " " + lastName;
