@@ -10,7 +10,7 @@
       spacing="20"
       prefWidth="450" 
       prefHeight="550"
-      stylesheets="@/css/styles.css"
+      stylesheets="@../css/styles.css"
       styleClass="root">
     
     <padding>
