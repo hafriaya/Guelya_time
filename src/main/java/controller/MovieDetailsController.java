@@ -40,7 +40,11 @@ public class MovieDetailsController {
     
     @FXML
     public void initialize() {
-        // Film will be set via setFilm() method
+        // Get film from SceneManager
+        Film film = SceneManager.getInstance().getSelectedFilm();
+        if (film != null) {
+            setFilm(film);
+        }
     }
     
     public void setFilm(Film film) {
