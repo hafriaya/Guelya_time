@@ -10,6 +10,7 @@ import javafx.scene.layout.*;
 import model.Film;
 import model.User;
 import service.FilmService;
+import service.RecommendationService;
 import service.SessionService;
 
 import java.util.List;
@@ -25,12 +26,14 @@ public class DashboardController {
     @FXML private Button showMoreButton;
     
     private FilmService filmService;
+    private RecommendationService recommendationService;
     private int currentPage = 1;
     private String currentSection = "popular";
     private String currentSearchQuery = "";
     
     public DashboardController() {
         this.filmService = new FilmService();
+        this.recommendationService = new RecommendationService();
     }
     
     @FXML
@@ -49,9 +52,29 @@ public class DashboardController {
     private void showHome() {
         currentSection = "home";
         currentPage = 1;
-        sectionTitle.setText("Recommendations");
+        sectionTitle.setText("Recommendations for You");
         filmsContainer.getChildren().clear();
-        loadFilms(false);
+        showMoreButton.setVisible(false);
+        
+        loadingLabel.setVisible(true);
+        
+        new Thread(() -> {
+            try {
+                User user = SessionService.getInstance().getCurrentUser();
+                List<Film> recommendations = recommendationService.getPersonalizedRecommendations(user.getId(), 20);
+                
+                Platform.runLater(() -> {
+                    loadingLabel.setVisible(false);
+                    displayFilms(recommendations, false);
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loadingLabel.setText("Error loading recommendations");
+                    loadingLabel.setVisible(true);
+                });
+                e.printStackTrace();
+            }
+        }).start();
     }
     
     @FXML
