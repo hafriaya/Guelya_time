@@ -95,6 +95,9 @@ public class UserRepository {
             }
             user.setFavoriteGenres(genres);
         }
+        if (!node.get("onboardingCompleted").isNull()) {
+            user.setOnboardingCompleted(node.get("onboardingCompleted").asBoolean());
+        }
 
         return user;
     }
@@ -256,5 +259,36 @@ public class UserRepository {
         return users;
     }
 
+    // Set onboarding completed flag for user
+    public void setOnboardingCompleted(String userId, boolean completed) {
+        try (Session session = driver.session()) {
+            String query = """
+                MATCH (u:User {id: $userId})
+                SET u.onboardingCompleted = $completed
+                """;
+            session.run(query, Values.parameters(
+                    "userId", userId,
+                    "completed", completed
+            ));
+        }
+    }
+
+    // Check if user has completed onboarding
+    public boolean hasCompletedOnboarding(String userId) {
+        try (Session session = driver.session()) {
+            String query = """
+                MATCH (u:User {id: $userId})
+                RETURN u.onboardingCompleted AS completed
+                """;
+            Result result = session.run(query, Values.parameters("userId", userId));
+            if (result.hasNext()) {
+                Value value = result.next().get("completed");
+                if (!value.isNull()) {
+                    return value.asBoolean();
+                }
+            }
+            return false;
+        }
+    }
 
 }
