@@ -6,33 +6,37 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" 
             fx:controller="controller.OnboardingController"
-            prefWidth="900" 
-            prefHeight="650"
-            style="-fx-background-color: #1a1a2e;">
+            prefWidth="1100" 
+            prefHeight="750"
+            stylesheets="@/css/styles.css"
+            styleClass="root">
     
     <!-- Top header -->
     <top>
-        <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #16213e; -fx-padding: 20;">
-            <Label text="Bienvenue! Choisissez vos films préférés" 
-                   style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-            <Label text="Sélectionnez au moins 3 films pour personnaliser vos recommandations" 
-                   style="-fx-text-fill: #aaa;"/>
-            <Label fx:id="selectionCountLabel" text="0 film(s) sélectionné(s)" 
-                   style="-fx-text-fill: #e94560; -fx-font-size: 14px;"/>
+        <VBox alignment="CENTER" spacing="12" styleClass="header-bar" style="-fx-padding: 30;">
+            <Label text="GUELYA TIME" styleClass="app-title"/>
+            <Label text="Welcome! Choose your favorite movies" styleClass="title-label" style="-fx-font-size: 26px;"/>
+            <Label text="Select at least 3 movies to personalize your recommendations" styleClass="subtitle"/>
+            <HBox alignment="CENTER" spacing="8" style="-fx-padding: 10 0 0 0;">
+                <Label fx:id="selectionCountLabel" text="0" 
+                       style="-fx-text-fill: #7b5bf5; -fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label text="movies selected" styleClass="subtitle"/>
+            </HBox>
         </VBox>
     </top>
     
     <!-- Movies grid -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background: #1a1a2e; -fx-background-color: #1a1a2e;">
-            <VBox spacing="20" style="-fx-padding: 20;">
-                <FlowPane fx:id="moviesContainer" hgap="15" vgap="15" alignment="CENTER"/>
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane" style="-fx-background-color: #0f0f0f;">
+            <VBox spacing="25" styleClass="content-area">
+                <FlowPane fx:id="moviesContainer" hgap="20" vgap="25" alignment="CENTER" styleClass="flow-pane"/>
                 
-                <HBox alignment="CENTER" spacing="10">
-                    <Button fx:id="loadMoreButton" text="Charger plus de films" 
+                <HBox alignment="CENTER" spacing="15" style="-fx-padding: 20 0;">
+                    <Button fx:id="loadMoreButton" text="Load More Movies" 
                             onAction="#loadMoreMovies"
-                            style="-fx-background-color: #16213e; -fx-text-fill: white; -fx-padding: 10 30;"/>
-                    <Label fx:id="loadingLabel" text="Chargement..." style="-fx-text-fill: #888;" visible="false"/>
+                            styleClass="button-ghost"
+                            style="-fx-border-color: #3a3a3a; -fx-border-radius: 8; -fx-padding: 12 40;"/>
+                    <Label fx:id="loadingLabel" text="Loading..." styleClass="loading-label" visible="false"/>
                 </HBox>
             </VBox>
         </ScrollPane>
@@ -40,12 +44,14 @@
     
     <!-- Bottom submit -->
     <bottom>
-        <HBox alignment="CENTER" style="-fx-background-color: #16213e; -fx-padding: 20;">
-            <Button fx:id="submitButton" text="Continuer" 
+        <HBox alignment="CENTER" styleClass="header-bar" style="-fx-padding: 25;">
+            <Button fx:id="submitButton" text="Continue →" 
                     onAction="#handleSubmit"
                     disable="true"
-                    prefWidth="200"
-                    style="-fx-background-color: #e94560; -fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 12 40;"/>
+                    prefWidth="220"
+                    prefHeight="50"
+                    styleClass="button-success"
+                    style="-fx-font-size: 16px;"/>
         </HBox>
     </bottom>
     

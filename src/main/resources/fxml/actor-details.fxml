@@ -6,66 +6,72 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.ActorDetailsController"
-            style="-fx-background-color: #1a1a2e;" prefWidth="900" prefHeight="700">
+            prefWidth="1100" prefHeight="800"
+            stylesheets="@/css/styles.css"
+            styleClass="root">
     
     <!-- Top Bar -->
     <top>
-        <HBox style="-fx-background-color: #16213e; -fx-padding: 15;" alignment="CENTER_LEFT" spacing="20">
-            <Button fx:id="backButton" text="← Back" onAction="#handleBack"
-                    style="-fx-background-color: #e94560; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
-            <Label text="Actor Details" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+        <HBox styleClass="header-bar" alignment="CENTER_LEFT" spacing="20">
+            <Button fx:id="backButton" text="← Back" onAction="#handleBack" styleClass="button-ghost"
+                    style="-fx-border-color: #3a3a3a; -fx-border-radius: 8;"/>
+            <Label text="Actor Details" styleClass="section-title" style="-fx-padding: 0;"/>
         </HBox>
     </top>
     
     <!-- Main Content -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: #1a1a2e; -fx-background: #1a1a2e;">
-            <VBox spacing="30" style="-fx-padding: 30;">
+        <ScrollPane fitToWidth="true" styleClass="scroll-pane" style="-fx-background-color: #0f0f0f;">
+            <VBox spacing="40" styleClass="content-area">
                 
                 <!-- Actor Info Section -->
-                <HBox spacing="30">
+                <HBox spacing="40">
                     
                     <!-- Left: Photo -->
                     <VBox alignment="TOP_CENTER" spacing="15">
-                        <ImageView fx:id="profileImage" fitWidth="250" fitHeight="350" preserveRatio="true"/>
+                        <StackPane styleClass="poster-container">
+                            <ImageView fx:id="profileImage" fitWidth="280" fitHeight="400" preserveRatio="true"/>
+                        </StackPane>
                     </VBox>
                     
                     <!-- Right: Details -->
-                    <VBox spacing="15" HBox.hgrow="ALWAYS">
+                    <VBox spacing="18" HBox.hgrow="ALWAYS">
                         <!-- Name -->
-                        <Label fx:id="nameLabel" text="Actor Name" wrapText="true"
-                               style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+                        <Label fx:id="nameLabel" text="Actor Name" wrapText="true" styleClass="title-label"/>
                         
                         <!-- Birth Info -->
-                        <HBox spacing="20" alignment="CENTER_LEFT">
-                            <Label fx:id="birthdayLabel" text=""
-                                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 14px;"/>
-                            <Label fx:id="birthplaceLabel" text=""
-                                   style="-fx-text-fill: #888888; -fx-font-size: 14px;"/>
+                        <HBox spacing="25" alignment="CENTER_LEFT">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="🎂" style="-fx-font-size: 16px;"/>
+                                <Label fx:id="birthdayLabel" text="" styleClass="subtitle"/>
+                            </HBox>
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="📍" style="-fx-font-size: 16px;"/>
+                                <Label fx:id="birthplaceLabel" text="" styleClass="text-muted"/>
+                            </HBox>
                         </HBox>
                         
                         <!-- Popularity -->
-                        <HBox spacing="10" alignment="CENTER_LEFT">
-                            <Label text="Popularity:" style="-fx-text-fill: #888888; -fx-font-size: 13px;"/>
-                            <Label fx:id="popularityLabel" text="0" style="-fx-text-fill: #27ae60; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label text="Popularity Score" styleClass="text-muted"/>
+                            <Label fx:id="popularityLabel" text="0" styleClass="badge-purple"/>
                         </HBox>
                         
                         <!-- Biography -->
-                        <VBox spacing="8">
-                            <Label text="Biography" style="-fx-text-fill: #e94560; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                        <VBox spacing="12" style="-fx-padding: 15 0 0 0;">
+                            <Label text="Biography" style="-fx-text-fill: #7b5bf5; -fx-font-size: 18px; -fx-font-weight: bold;"/>
                             <Label fx:id="biographyLabel" text="No biography available." wrapText="true"
-                                   style="-fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-line-spacing: 4;"/>
+                                   styleClass="subtitle" style="-fx-font-size: 14px; -fx-line-spacing: 5;"/>
                         </VBox>
                         
                     </VBox>
                 </HBox>
                 
                 <!-- Known For Section -->
-                <VBox spacing="15">
-                    <Label text="Known For" style="-fx-text-fill: #e94560; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-                    <ScrollPane fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" 
-                                prefHeight="280" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
-                        <HBox fx:id="knownForContainer" spacing="15" style="-fx-padding: 5;">
+                <VBox spacing="18">
+                    <Label text="Known For" styleClass="section-title"/>
+                    <ScrollPane fitToHeight="true" styleClass="scroll-pane" prefHeight="320" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+                        <HBox fx:id="knownForContainer" spacing="20" style="-fx-padding: 8;">
                             <!-- Movie cards will be added dynamically -->
                         </HBox>
                     </ScrollPane>
