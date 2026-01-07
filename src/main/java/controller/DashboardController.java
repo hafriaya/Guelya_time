@@ -252,8 +252,7 @@ public class DashboardController {
     }
     
     private void showFilmDetails(Film film) {
-        // TODO: open film details view
-        System.out.println("Clicked on: " + film.getTitle());
+        SceneManager.getInstance().showMovieDetails(film);
     }
     
     // helper interface for loading films
