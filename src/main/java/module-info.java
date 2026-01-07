@@ -8,6 +8,7 @@ module Guelya_time {
     // Ouvrir les packages au framework JavaFX
     opens controller to javafx.fxml;
     opens app to javafx.graphics, javafx.fxml;
+    opens model to javafx.base;
 
     // Exporter les packages
     exports app;
