@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a89385cb-42fa-4d32-bb82-8b23638e0674" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ChouraneBD&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/hafriaya/Guelya_time.git&quot;,
+    &quot;accountId&quot;: &quot;0afa10c6-dcff-421f-b3ed-1be7bd0f7111&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="37F65p9YnaV0dyhzoSdSkxS59xE" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MainApp.executor": "Run",
+    "Application.TestDB.executor": "Run",
+    "JUnit.ActeurTest.executor": "Run",
+    "JUnit.FilmServiceTest.executor": "Run",
+    "JUnit.FilmTest.executor": "Run",
+    "JUnit.GenreSyncTest.executor": "Run",
+    "JUnit.GenreTest.executor": "Run",
+    "JUnit.RecommendationServiceTest.executor": "Run",
+    "JUnit.TmdbServiceTest.executor": "Run",
+    "JUnit.UserServiceTest.executor": "Run",
+    "JUnit.UserServiceTest.testChangePasswordWrongCurrent.executor": "Run",
+    "JUnit.UserTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/projects/java/projet/Guelya_time",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration name="UserServiceTest.testChangePasswordWrongCurrent" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="Guelya_time" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.guelya.guelya_time.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.guelya.guelya_time" />
+      <option name="MAIN_CLASS_NAME" value="com.guelya.guelya_time.UserServiceTest" />
+      <option name="METHOD_NAME" value="testChangePasswordWrongCurrent" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.UserServiceTest.testChangePasswordWrongCurrent" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28238.7" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28238.7" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a89385cb-42fa-4d32-bb82-8b23638e0674" name="Changes" comment="" />
+      <created>1766486294149</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1766486294149</updated>
+      <workItem from="1766486295893" duration="1060000" />
+      <workItem from="1766524069824" duration="1724000" />
+      <workItem from="1766688887070" duration="2290000" />
+      <workItem from="1766759716542" duration="353000" />
+      <workItem from="1766760267347" duration="1128000" />
+      <workItem from="1766766255174" duration="834000" />
+      <workItem from="1767025219040" duration="206000" />
+      <workItem from="1767278024768" duration="3272000" />
+      <workItem from="1767281502479" duration="1111000" />
+      <workItem from="1767360172576" duration="6326000" />
+      <workItem from="1767630400705" duration="860000" />
+      <workItem from="1767780690442" duration="1167000" />
+      <workItem from="1767782154813" duration="232000" />
+      <workItem from="1767782488913" duration="500000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
