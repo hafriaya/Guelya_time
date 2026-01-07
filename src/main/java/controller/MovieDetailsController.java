@@ -3,16 +3,25 @@ package controller;
 import config.SceneManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.shape.Rectangle;
+import model.Acteur;
 import model.Film;
 import model.Genre;
 import model.User;
 import service.FilmService;
 import service.SessionService;
+import service.TmdbService;
+
+import java.util.List;
 
 public class MovieDetailsController {
     
@@ -25,17 +34,28 @@ public class MovieDetailsController {
     @FXML private Label popularityLabel;
     @FXML private Label statusLabel;
     @FXML private FlowPane genresContainer;
+    @FXML private HBox castContainer;
+    @FXML private HBox directorBox;
+    @FXML private HBox directorContainer;
+    @FXML private ImageView directorPhoto;
+    @FXML private Label directorLabel;
+    @FXML private VBox directorFilmsSection;
+    @FXML private Label directorFilmsLabel;
+    @FXML private HBox directorFilmsContainer;
     @FXML private Button watchlistButton;
     @FXML private Button favoriteButton;
     @FXML private Button backButton;
     
     private FilmService filmService;
+    private TmdbService tmdbService;
     private Film currentFilm;
+    private Acteur currentDirector;
     private boolean isInWatchlist = false;
     private boolean isInFavorites = false;
     
     public MovieDetailsController() {
         this.filmService = new FilmService();
+        this.tmdbService = new TmdbService();
     }
     
     @FXML
@@ -51,6 +71,8 @@ public class MovieDetailsController {
         this.currentFilm = film;
         displayFilmDetails();
         checkUserLists();
+        loadCast();
+        loadDirector();
     }
     
     private void displayFilmDetails() {
@@ -220,6 +242,221 @@ public class MovieDetailsController {
                 }
             }).start();
         });
+    }
+    
+    private void loadCast() {
+        if (currentFilm == null) return;
+        
+        new Thread(() -> {
+            try {
+                List<Acteur> cast = tmdbService.getMovieCast(currentFilm.getId(), 10);
+                
+                Platform.runLater(() -> {
+                    castContainer.getChildren().clear();
+                    
+                    for (Acteur acteur : cast) {
+                        VBox actorCard = createActorCard(acteur);
+                        castContainer.getChildren().add(actorCard);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    
+    private VBox createActorCard(Acteur acteur) {
+        VBox card = new VBox(8);
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setPrefWidth(120);
+        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;");
+        
+        // Actor Photo
+        ImageView photoView = new ImageView();
+        photoView.setFitWidth(100);
+        photoView.setFitHeight(120);
+        photoView.setPreserveRatio(false);
+        
+        // Rounded corners for photo
+        Rectangle clip = new Rectangle(100, 120);
+        clip.setArcWidth(15);
+        clip.setArcHeight(15);
+        photoView.setClip(clip);
+        
+        String profileUrl = acteur.getFullProfileUrl();
+        if (profileUrl != null) {
+            try {
+                photoView.setImage(new Image(profileUrl, true));
+            } catch (Exception e) {
+                // Use placeholder style
+                photoView.setStyle("-fx-background-color: #333;");
+            }
+        }
+        
+        // Actor Name
+        Label nameLabel = new Label(acteur.getName());
+        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;");
+        nameLabel.setWrapText(true);
+        nameLabel.setMaxWidth(100);
+        nameLabel.setAlignment(Pos.CENTER);
+        
+        // Character Name
+        Label characterLabel = new Label(acteur.getCharacter() != null ? acteur.getCharacter() : "");
+        characterLabel.setStyle("-fx-text-fill: #888888; -fx-font-size: 10px;");
+        characterLabel.setWrapText(true);
+        characterLabel.setMaxWidth(100);
+        characterLabel.setAlignment(Pos.CENTER);
+        
+        card.getChildren().addAll(photoView, nameLabel, characterLabel);
+        
+        // Click handler to show actor details
+        card.setCursor(Cursor.HAND);
+        card.setOnMouseClicked(e -> showActorDetails(acteur));
+        
+        // Hover effect
+        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #1e3057; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        
+        return card;
+    }
+    
+    private void showActorDetails(Acteur acteur) {
+        SceneManager.getInstance().setSelectedActeur(acteur);
+        SceneManager.getInstance().switchTo("actor-details");
+    }
+    
+    private void loadDirector() {
+        if (currentFilm == null) return;
+        
+        new Thread(() -> {
+            try {
+                Acteur director = tmdbService.getMovieDirector(currentFilm.getId());
+                
+                if (director != null) {
+                    currentDirector = director;
+                    List<Film> directorFilms = tmdbService.getDirectorMovies(director.getId(), 10);
+                    
+                    Platform.runLater(() -> {
+                        displayDirector(director);
+                        displayDirectorFilms(directorFilms);
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+    
+    private void displayDirector(Acteur director) {
+        // Set director name
+        directorLabel.setText(director.getName());
+        
+        // Set director photo with rounded corners
+        String profileUrl = director.getFullProfileUrl();
+        if (profileUrl != null) {
+            try {
+                directorPhoto.setImage(new Image(profileUrl, true));
+                Rectangle clip = new Rectangle(40, 40);
+                clip.setArcWidth(20);
+                clip.setArcHeight(20);
+                directorPhoto.setClip(clip);
+            } catch (Exception e) {
+                directorPhoto.setVisible(false);
+            }
+        } else {
+            directorPhoto.setVisible(false);
+        }
+        
+        // Make director clickable
+        directorContainer.setCursor(Cursor.HAND);
+        directorContainer.setOnMouseClicked(e -> showDirectorDetails(director));
+        
+        // Hover effect on director name
+        directorLabel.setOnMouseEntered(e -> directorLabel.setStyle("-fx-text-fill: #ff6b81; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-underline: true;"));
+        directorLabel.setOnMouseExited(e -> directorLabel.setStyle("-fx-text-fill: #e94560; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"));
+    }
+    
+    private void displayDirectorFilms(List<Film> films) {
+        if (films == null || films.isEmpty()) return;
+        
+        // Filter out current movie
+        films.removeIf(f -> f.getId() == currentFilm.getId());
+        
+        if (films.isEmpty()) return;
+        
+        // Show section
+        directorFilmsSection.setVisible(true);
+        directorFilmsSection.setManaged(true);
+        
+        // Update label with director name
+        if (currentDirector != null) {
+            directorFilmsLabel.setText("More from " + currentDirector.getName());
+        }
+        
+        // Add film cards
+        directorFilmsContainer.getChildren().clear();
+        for (Film film : films) {
+            VBox filmCard = createFilmCard(film);
+            directorFilmsContainer.getChildren().add(filmCard);
+        }
+    }
+    
+    private VBox createFilmCard(Film film) {
+        VBox card = new VBox(8);
+        card.setAlignment(Pos.TOP_CENTER);
+        card.setPrefWidth(140);
+        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;");
+        
+        // Poster
+        ImageView posterView = new ImageView();
+        posterView.setFitWidth(120);
+        posterView.setFitHeight(180);
+        posterView.setPreserveRatio(false);
+        
+        // Rounded corners
+        Rectangle clip = new Rectangle(120, 180);
+        clip.setArcWidth(15);
+        clip.setArcHeight(15);
+        posterView.setClip(clip);
+        
+        String posterUrl = film.getFullPosterUrl();
+        if (posterUrl != null) {
+            try {
+                posterView.setImage(new Image(posterUrl, true));
+            } catch (Exception e) {
+                // placeholder
+            }
+        }
+        
+        // Title
+        Label titleLbl = new Label(film.getTitle());
+        titleLbl.setStyle("-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;");
+        titleLbl.setWrapText(true);
+        titleLbl.setMaxWidth(120);
+        titleLbl.setAlignment(Pos.CENTER);
+        
+        // Rating
+        Label ratingLbl = new Label(String.format("★ %.1f", film.getVoteAverage()));
+        ratingLbl.setStyle("-fx-text-fill: #f1c40f; -fx-font-size: 10px;");
+        
+        card.getChildren().addAll(posterView, titleLbl, ratingLbl);
+        
+        // Click to view
+        card.setCursor(Cursor.HAND);
+        card.setOnMouseClicked(e -> {
+            SceneManager.getInstance().showMovieDetails(film);
+        });
+        
+        // Hover effect
+        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #1e3057; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        
+        return card;
+    }
+    
+    private void showDirectorDetails(Acteur director) {
+        SceneManager.getInstance().setSelectedActeur(director);
+        SceneManager.getInstance().switchTo("actor-details");
     }
     
     @FXML
