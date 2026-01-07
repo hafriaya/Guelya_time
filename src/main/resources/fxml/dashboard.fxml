@@ -8,7 +8,7 @@
             fx:controller="controller.DashboardController"
             prefWidth="1100" 
             prefHeight="700"
-            stylesheets="@/css/styles.css"
+            stylesheets="@../css/styles.css"
             styleClass="root">
     
     <!-- Top bar -->
