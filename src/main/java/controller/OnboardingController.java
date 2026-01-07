@@ -189,6 +189,17 @@ public class OnboardingController {
                 userService.completeOnboarding(user.getId());
                 user.setOnboardingCompleted(true);
                 SessionService.getInstance().setCurrentUser(user);
+                
+                Platform.runLater(() -> {
+                    SceneManager.getInstance().switchTo("dashboard");
+                });
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    submitButton.setDisable(false);
+                    submitButton.setText("Continuer");
+                });
+                e.printStackTrace();
+            }
         }).start();
     }
 }
