@@ -11,10 +11,13 @@ import model.Film;
 import model.User;
 import service.FilmService;
 import service.SessionService;
+import service.UserService;
+import repository.GenreRepository;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OnboardingController {
     
@@ -25,11 +28,15 @@ public class OnboardingController {
     @FXML private Button loadMoreButton;
     
     private FilmService filmService;
+    private UserService userService;
+    private GenreRepository genreRepository;
     private Set<Long> selectedMovieIds = new HashSet<>();
     private int currentPage = 1;
     
     public OnboardingController() {
         this.filmService = new FilmService();
+        this.userService = new UserService();
+        this.genreRepository = new GenreRepository();
     }
     
     @FXML
@@ -155,21 +162,33 @@ public class OnboardingController {
             try {
                 User user = SessionService.getInstance().getCurrentUser();
                 
-                // save selected movies to favorites
+                // Save selected movies to favorites and extract genres
+                Set<Integer> allGenreIds = new HashSet<>();
                 for (Long filmId : selectedMovieIds) {
+                    // Add to favorites
                     filmService.addToFavorites(user.getId(), filmId);
+                    
+                    // Get film and extract genres
+                    filmService.getFilmById(filmId).ifPresent(film -> {
+                        if (film.getGenres() != null) {
+                            allGenreIds.addAll(
+                                film.getGenres().stream()
+                                    .map(g -> g.getId())
+                                    .collect(Collectors.toList())
+                            );
+                        }
+                    });
                 }
                 
-                Platform.runLater(() -> {
-                    SceneManager.getInstance().switchTo("dashboard");
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    submitButton.setDisable(false);
-                    submitButton.setText("Continuer");
-                });
-                e.printStackTrace();
-            }
+                // Save extracted genres to user preferences
+                if (!allGenreIds.isEmpty()) {
+                    genreRepository.setUserFavoriteGenres(user.getId(), new java.util.ArrayList<>(allGenreIds));
+                }
+                
+                // Mark onboarding as completed
+                userService.completeOnboarding(user.getId());
+                user.setOnboardingCompleted(true);
+                SessionService.getInstance().setCurrentUser(user);
         }).start();
     }
 }
