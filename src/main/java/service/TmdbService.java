@@ -1,6 +1,7 @@
 package service;
 
 import config.Neo4jConfig;
+import model.Acteur;
 import model.Film;
 import model.Genre;
 
@@ -468,64 +469,6 @@ public class TmdbService {
         return genres;
     }
 
-    // ==================== MOVIE CREDITS (CAST) ====================
-
-    /**
-     * Get movie credits (cast and crew)
-     */
-    public List<model.Acteur> getMovieCredits(long movieId) {
-        String url = baseUrl + "/movie/" + movieId + "/credits?api_key=" + apiKey + "&language=fr-FR";
-        String json = fetchJson(url);
-        if (json == null) return new ArrayList<>();
-
-        return parseCast(json);
-    }
-
-    /**
-     * Parse cast from credits JSON
-     */
-    private List<model.Acteur> parseCast(String json) {
-        List<model.Acteur> cast = new ArrayList<>();
-
-        String searchKey = "\"cast\":[";
-        int keyIndex = json.indexOf(searchKey);
-        if (keyIndex == -1) return cast;
-
-        int arrayStart = keyIndex + searchKey.length();
-        String castJson = json.substring(arrayStart);
-
-        List<String> castObjects = splitJsonArray(castJson);
-
-        // Limit to top 10 cast members
-        int limit = Math.min(castObjects.size(), 10);
-        for (int i = 0; i < limit; i++) {
-            String actorJson = castObjects.get(i);
-            model.Acteur actor = parseActor(actorJson);
-            if (actor != null) {
-                cast.add(actor);
-            }
-        }
-
-        return cast;
-    }
-
-    /**
-     * Parse a single actor from JSON
-     */
-    private model.Acteur parseActor(String json) {
-        try {
-            String id = String.valueOf(extractLong(json, "id"));
-            String name = extractString(json, "name");
-            String profilePath = extractString(json, "profile_path");
-            String character = extractString(json, "character");
-
-            return new model.Acteur(id, name, profilePath, character);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // ==================== ALL GENRES ====================
 
     /**
@@ -576,6 +519,219 @@ public class TmdbService {
     public List<Film> getUpcomingMovies(int page) {
         String url = baseUrl + "/movie/upcoming?api_key=" + apiKey + "&language=fr-FR&page=" + page;
         return fetchMovieList(url);
+    }
+
+    // ==================== CAST/CREDITS ====================
+
+    /**
+     * Get movie cast (actors)
+     */
+    public List<Acteur> getMovieCast(long movieId) {
+        return getMovieCast(movieId, 10); // Default to 10 actors
+    }
+
+    /**
+     * Get movie cast with limit
+     */
+    public List<Acteur> getMovieCast(long movieId, int limit) {
+        List<Acteur> cast = new ArrayList<>();
+        String url = baseUrl + "/movie/" + movieId + "/credits?api_key=" + apiKey + "&language=fr-FR";
+        
+        try {
+            String json = fetchJson(url);
+            if (json == null) return cast;
+
+            // Find the cast array
+            int castStart = json.indexOf("\"cast\":[");
+            if (castStart == -1) return cast;
+
+            String castJson = json.substring(castStart + 8);
+            List<String> actorObjects = splitJsonArray(castJson);
+
+            int count = 0;
+            for (String actorJson : actorObjects) {
+                if (count >= limit) break;
+                
+                Acteur acteur = parseActor(actorJson);
+                if (acteur != null) {
+                    cast.add(acteur);
+                    count++;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return cast;
+    }
+
+    /**
+     * Parse actor from JSON
+     */
+    private Acteur parseActor(String json) {
+        try {
+            Acteur acteur = new Acteur();
+            acteur.setId(extractLong(json, "id"));
+            acteur.setName(extractString(json, "name"));
+            acteur.setProfilePath(extractString(json, "profile_path"));
+            acteur.setCharacter(extractString(json, "character"));
+            acteur.setPopularity(extractDouble(json, "popularity"));
+            return acteur;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Get actor details
+     */
+    public Acteur getActorDetails(long actorId) {
+        String url = baseUrl + "/person/" + actorId + "?api_key=" + apiKey + "&language=fr-FR";
+        
+        try {
+            String json = fetchJson(url);
+            if (json == null) return null;
+
+            Acteur acteur = new Acteur();
+            acteur.setId(extractLong(json, "id"));
+            acteur.setName(extractString(json, "name"));
+            acteur.setProfilePath(extractString(json, "profile_path"));
+            acteur.setBiography(extractString(json, "biography"));
+            acteur.setBirthday(extractString(json, "birthday"));
+            acteur.setPlaceOfBirth(extractString(json, "place_of_birth"));
+            acteur.setPopularity(extractDouble(json, "popularity"));
+            
+            return acteur;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Get movies an actor is known for
+     */
+    public List<Film> getActorMovies(long actorId, int limit) {
+        List<Film> films = new ArrayList<>();
+        String url = baseUrl + "/person/" + actorId + "/movie_credits?api_key=" + apiKey + "&language=fr-FR";
+        
+        try {
+            String json = fetchJson(url);
+            if (json == null) return films;
+
+            // Find the cast array (movies the actor appeared in)
+            int castStart = json.indexOf("\"cast\":[");
+            if (castStart == -1) return films;
+
+            String castJson = json.substring(castStart + 8);
+            List<String> movieObjects = splitJsonArray(castJson);
+
+            // Use a set to track seen movie IDs and avoid duplicates
+            java.util.Set<Long> seenIds = new java.util.HashSet<>();
+            List<Film> allFilms = new ArrayList<>();
+            for (String movieJson : movieObjects) {
+                Film film = parseMovie(movieJson);
+                if (film != null && film.getPosterPath() != null && !seenIds.contains(film.getId())) {
+                    seenIds.add(film.getId());
+                    allFilms.add(film);
+                }
+            }
+            
+            // Sort by popularity
+            allFilms.sort((a, b) -> Double.compare(b.getPopularity(), a.getPopularity()));
+            
+            // Take top N films
+            for (int i = 0; i < Math.min(limit, allFilms.size()); i++) {
+                films.add(allFilms.get(i));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return films;
+    }
+
+    // ==================== DIRECTOR ====================
+
+    /**
+     * Get movie director from credits
+     */
+    public Acteur getMovieDirector(long movieId) {
+        String url = baseUrl + "/movie/" + movieId + "/credits?api_key=" + apiKey + "&language=fr-FR";
+        
+        try {
+            String json = fetchJson(url);
+            if (json == null) return null;
+
+            // Find the crew array
+            int crewStart = json.indexOf("\"crew\":[");
+            if (crewStart == -1) return null;
+
+            String crewJson = json.substring(crewStart + 8);
+            List<String> crewObjects = splitJsonArray(crewJson);
+
+            // Find director in crew
+            for (String crewMember : crewObjects) {
+                String job = extractString(crewMember, "job");
+                if ("Director".equals(job)) {
+                    Acteur director = new Acteur();
+                    director.setId(extractLong(crewMember, "id"));
+                    director.setName(extractString(crewMember, "name"));
+                    director.setProfilePath(extractString(crewMember, "profile_path"));
+                    director.setPopularity(extractDouble(crewMember, "popularity"));
+                    return director;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Get movies directed by a person
+     */
+    public List<Film> getDirectorMovies(long personId, int limit) {
+        List<Film> films = new ArrayList<>();
+        String url = baseUrl + "/person/" + personId + "/movie_credits?api_key=" + apiKey + "&language=fr-FR";
+        
+        try {
+            String json = fetchJson(url);
+            if (json == null) return films;
+
+            // Find the crew array (movies the person worked on)
+            int crewStart = json.indexOf("\"crew\":[");
+            if (crewStart == -1) return films;
+
+            String crewJson = json.substring(crewStart + 8);
+            List<String> movieObjects = splitJsonArray(crewJson);
+
+            // Use a set to track seen movie IDs and avoid duplicates
+            java.util.Set<Long> seenIds = new java.util.HashSet<>();
+            List<Film> allFilms = new ArrayList<>();
+            for (String movieJson : movieObjects) {
+                String job = extractString(movieJson, "job");
+                if ("Director".equals(job)) {
+                    Film film = parseMovie(movieJson);
+                    if (film != null && film.getPosterPath() != null && !seenIds.contains(film.getId())) {
+                        seenIds.add(film.getId());
+                        allFilms.add(film);
+                    }
+                }
+            }
+            
+            // Sort by popularity
+            allFilms.sort((a, b) -> Double.compare(b.getPopularity(), a.getPopularity()));
+            
+            // Take top N films
+            for (int i = 0; i < Math.min(limit, allFilms.size()); i++) {
+                films.add(allFilms.get(i));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return films;
     }
 
     // ==================== IMAGE URLS ====================
