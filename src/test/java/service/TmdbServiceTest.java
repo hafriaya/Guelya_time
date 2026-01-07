@@ -161,11 +161,11 @@ class TmdbServiceTest {
     // ==================== MOVIE CREDITS ====================
 
     @Test
-    @DisplayName("getMovieCredits should return cast list")
-    void testGetMovieCredits() {
+    @DisplayName("getMovieCast should return cast list")
+    void testGetMovieCast() {
         // Inception movie ID
         long movieId = 27205;
-        List<Acteur> cast = tmdbService.getMovieCredits(movieId);
+        List<Acteur> cast = tmdbService.getMovieCast(movieId);
 
         assertNotNull(cast);
         assertFalse(cast.isEmpty(), "Film should have cast members");
@@ -174,13 +174,13 @@ class TmdbServiceTest {
         // Check first actor has required fields
         Acteur firstActor = cast.get(0);
         assertNotNull(firstActor.getName(), "Actor should have a name");
-        assertNotNull(firstActor.getId(), "Actor should have an ID");
+        assertTrue(firstActor.getId() > 0, "Actor should have a valid ID");
     }
 
     @Test
-    @DisplayName("getMovieCredits with invalid ID should return empty list")
-    void testGetMovieCreditsInvalidId() {
-        List<Acteur> cast = tmdbService.getMovieCredits(999999999L);
+    @DisplayName("getMovieCast with invalid ID should return empty list")
+    void testGetMovieCastInvalidId() {
+        List<Acteur> cast = tmdbService.getMovieCast(999999999L);
         assertNotNull(cast);
         assertTrue(cast.isEmpty(), "Invalid movie ID should return empty cast");
     }
