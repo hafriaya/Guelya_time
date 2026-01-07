@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.ActorDetailsController"
+            style="-fx-background-color: #1a1a2e;" prefWidth="900" prefHeight="700">
+    
+    <!-- Top Bar -->
+    <top>
+        <HBox style="-fx-background-color: #16213e; -fx-padding: 15;" alignment="CENTER_LEFT" spacing="20">
+            <Button fx:id="backButton" text="← Back" onAction="#handleBack"
+                    style="-fx-background-color: #e94560; -fx-text-fill: white; -fx-font-size: 13px; -fx-padding: 8 16; -fx-cursor: hand;"/>
+            <Label text="Actor Details" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+        </HBox>
+    </top>
+    
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #1a1a2e; -fx-background: #1a1a2e;">
+            <VBox spacing="30" style="-fx-padding: 30;">
+                
+                <!-- Actor Info Section -->
+                <HBox spacing="30">
+                    
+                    <!-- Left: Photo -->
+                    <VBox alignment="TOP_CENTER" spacing="15">
+                        <ImageView fx:id="profileImage" fitWidth="250" fitHeight="350" preserveRatio="true"/>
+                    </VBox>
+                    
+                    <!-- Right: Details -->
+                    <VBox spacing="15" HBox.hgrow="ALWAYS">
+                        <!-- Name -->
+                        <Label fx:id="nameLabel" text="Actor Name" wrapText="true"
+                               style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+                        
+                        <!-- Birth Info -->
+                        <HBox spacing="20" alignment="CENTER_LEFT">
+                            <Label fx:id="birthdayLabel" text=""
+                                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 14px;"/>
+                            <Label fx:id="birthplaceLabel" text=""
+                                   style="-fx-text-fill: #888888; -fx-font-size: 14px;"/>
+                        </HBox>
+                        
+                        <!-- Popularity -->
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Popularity:" style="-fx-text-fill: #888888; -fx-font-size: 13px;"/>
+                            <Label fx:id="popularityLabel" text="0" style="-fx-text-fill: #27ae60; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                        </HBox>
+                        
+                        <!-- Biography -->
+                        <VBox spacing="8">
+                            <Label text="Biography" style="-fx-text-fill: #e94560; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                            <Label fx:id="biographyLabel" text="No biography available." wrapText="true"
+                                   style="-fx-text-fill: #cccccc; -fx-font-size: 14px; -fx-line-spacing: 4;"/>
+                        </VBox>
+                        
+                    </VBox>
+                </HBox>
+                
+                <!-- Known For Section -->
+                <VBox spacing="15">
+                    <Label text="Known For" style="-fx-text-fill: #e94560; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                    <ScrollPane fitToHeight="true" style="-fx-background-color: transparent; -fx-background: transparent;" 
+                                prefHeight="280" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER">
+                        <HBox fx:id="knownForContainer" spacing="15" style="-fx-padding: 5;">
+                            <!-- Movie cards will be added dynamically -->
+                        </HBox>
+                    </ScrollPane>
+                </VBox>
+                
+            </VBox>
+        </ScrollPane>
+    </center>
+    
+</BorderPane>
