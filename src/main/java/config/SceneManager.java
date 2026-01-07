@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import model.Acteur;
 import model.Film;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ public class SceneManager {
     private static SceneManager instance;
     private Stage primaryStage;
     private Film selectedFilm;
+    private Acteur selectedActeur;
 
     private SceneManager() {}
 
@@ -27,6 +29,10 @@ public class SceneManager {
     public void setSelectedFilm(Film film) { this.selectedFilm = film; }
     
     public Film getSelectedFilm() { return selectedFilm; }
+    
+    public void setSelectedActeur(Acteur acteur) { this.selectedActeur = acteur; }
+    
+    public Acteur getSelectedActeur() { return selectedActeur; }
 
     public void switchTo(String fxmlName) {
         try {
@@ -41,5 +47,10 @@ public class SceneManager {
     public void showMovieDetails(Film film) {
         setSelectedFilm(film);
         switchTo("movie-details");
+    }
+    
+    public void showActorDetails(Acteur acteur) {
+        setSelectedActeur(acteur);
+        switchTo("actor-details");
     }
 }
