@@ -7,46 +7,60 @@
 <VBox xmlns:fx="http://javafx.com/fxml" 
       fx:controller="controller.LoginController"
       alignment="CENTER" 
-      spacing="15"
-      prefWidth="400" 
-      prefHeight="500"
-      style="-fx-background-color: #f5f5f5;">
+      spacing="20"
+      prefWidth="450" 
+      prefHeight="550"
+      stylesheets="@/css/styles.css"
+      styleClass="root">
     
     <padding>
-        <Insets top="50" right="50" bottom="50" left="50"/>
+        <Insets top="60" right="60" bottom="60" left="60"/>
     </padding>
     
-    <!-- Title -->
-    <Label text="Connexion" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-    
-    <!-- Username field -->
-    <VBox spacing="5" alignment="CENTER_LEFT">
-        <Label text="Nom d'utilisateur ou Email"/>
-        <TextField fx:id="usernameField" promptText="Entrez votre identifiant" prefWidth="300"/>
+    <!-- Logo/Title Section -->
+    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 0 0 30 0;">
+        <Label text="GUELYA TIME" styleClass="app-title" style="-fx-font-size: 32px;"/>
+        <Label text="Your personal movie experience" styleClass="subtitle"/>
     </VBox>
     
-    <!-- Password field -->
-    <VBox spacing="5" alignment="CENTER_LEFT">
-        <Label text="Mot de passe"/>
-        <PasswordField fx:id="passwordField" promptText="Entrez votre mot de passe" prefWidth="300"/>
+    <!-- Login Form Card -->
+    <VBox spacing="20" style="-fx-background-color: #1a1a1a; -fx-background-radius: 16; -fx-padding: 30;">
+        
+        <!-- Title -->
+        <Label text="Sign In" styleClass="section-title" style="-fx-padding: 0;"/>
+        
+        <!-- Username field -->
+        <VBox spacing="8">
+            <Label text="Username or Email" styleClass="subtitle" style="-fx-font-size: 12px;"/>
+            <TextField fx:id="usernameField" promptText="Enter your username" prefWidth="300" prefHeight="45"/>
+        </VBox>
+        
+        <!-- Password field -->
+        <VBox spacing="8">
+            <Label text="Password" styleClass="subtitle" style="-fx-font-size: 12px;"/>
+            <PasswordField fx:id="passwordField" promptText="Enter your password" prefWidth="300" prefHeight="45"/>
+        </VBox>
+        
+        <!-- Error label -->
+        <Label fx:id="errorLabel" 
+               styleClass="status-error"
+               visible="false"
+               wrapText="true"
+               maxWidth="300"/>
+        
+        <!-- Login button -->
+        <Button fx:id="loginButton" 
+                text="Sign In" 
+                onAction="#handleLogin"
+                prefWidth="300"
+                prefHeight="45"
+                styleClass="button-primary"
+                style="-fx-font-size: 15px;"/>
+        
     </VBox>
     
-    <!-- Error label -->
-    <Label fx:id="errorLabel" 
-           style="-fx-text-fill: red;" 
-           visible="false"
-           wrapText="true"
-           maxWidth="300"/>
-    
-    <!-- Login button -->
-    <Button fx:id="loginButton" 
-            text="Se connecter" 
-            onAction="#handleLogin"
-            prefWidth="300"
-            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;"/>
-    
-    <!-- Info -->
-    <Label text="Pas de compte? Inscrivez-vous sur le site web." style="-fx-text-fill: #888; -fx-font-size: 11px;"/>
+    <!-- Footer Info -->
+    <Label text="Don't have an account? Sign up on our website." styleClass="text-muted" style="-fx-font-size: 12px; -fx-padding: 20 0 0 0;"/>
     
 </VBox>
 

@@ -205,15 +205,16 @@ public class DashboardController {
     }
     
     private VBox createFilmCard(Film film) {
-        VBox card = new VBox(5);
-        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-cursor: hand; -fx-background-radius: 8;");
-        card.setPrefWidth(150);
+        VBox card = new VBox(8);
+        card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12;");
+        card.setPrefWidth(160);
         
-        // poster image
+        // poster image with container for rounded corners effect
         ImageView poster = new ImageView();
-        poster.setFitWidth(130);
-        poster.setFitHeight(195);
+        poster.setFitWidth(140);
+        poster.setFitHeight(210);
         poster.setPreserveRatio(true);
+        poster.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 4);");
         
         String posterUrl = film.getFullPosterUrl();
         if (posterUrl != null) {
@@ -226,15 +227,27 @@ public class DashboardController {
         
         // title
         Label title = new Label(film.getTitle());
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 12px;");
+        title.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold;");
         title.setWrapText(true);
-        title.setMaxWidth(130);
+        title.setMaxWidth(140);
         
-        // rating
+        // rating badge
         Label rating = new Label("★ " + String.format("%.1f", film.getVoteAverage()));
-        rating.setStyle("-fx-text-fill: #f1c40f;");
+        rating.setStyle("-fx-background-color: rgba(241, 196, 15, 0.2); -fx-text-fill: #f1c40f; -fx-padding: 4 10; -fx-background-radius: 6; -fx-font-weight: bold;");
         
         card.getChildren().addAll(poster, title, rating);
+        
+        // Hover effect
+        card.setOnMouseEntered(e -> {
+            card.setStyle("-fx-background-color: #252525; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(123, 91, 245, 0.4), 16, 0, 0, 6);");
+            card.setScaleX(1.03);
+            card.setScaleY(1.03);
+        });
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12;");
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+        });
         
         // click to view details
         card.setOnMouseClicked(e -> showFilmDetails(film));
