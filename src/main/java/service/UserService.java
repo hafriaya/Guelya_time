@@ -159,7 +159,15 @@ public class UserService {
     public boolean isEmailAvailable(String email) {
         return !userRepository.emailExists(email);
     }
+    // Mark onboarding as completed for user
+    public void completeOnboarding(String userId) {
+        userRepository.setOnboardingCompleted(userId, true);
+    }
 
+    // Check if user has completed onboarding
+    public boolean hasCompletedOnboarding(String userId) {
+        return userRepository.hasCompletedOnboarding(userId);
+    }
     public static class RegistrationException extends Exception {
             public RegistrationException(String message) {
                 super(message);
