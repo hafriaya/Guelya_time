@@ -54,27 +54,7 @@ public class DashboardController {
         currentPage = 1;
         sectionTitle.setText("Recommendations for You");
         filmsContainer.getChildren().clear();
-        showMoreButton.setVisible(false);
-        
-        loadingLabel.setVisible(true);
-        
-        new Thread(() -> {
-            try {
-                User user = SessionService.getInstance().getCurrentUser();
-                List<Film> recommendations = recommendationService.getPersonalizedRecommendations(user.getId(), 20);
-                
-                Platform.runLater(() -> {
-                    loadingLabel.setVisible(false);
-                    displayFilms(recommendations, false);
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    loadingLabel.setText("Error loading recommendations");
-                    loadingLabel.setVisible(true);
-                });
-                e.printStackTrace();
-            }
-        }).start();
+        loadFilms(false);
     }
     
     @FXML
@@ -146,21 +126,32 @@ public class DashboardController {
         new Thread(() -> {
             try {
                 List<Film> films;
+                User user = SessionService.getInstance().getCurrentUser();
                 
                 switch (currentSection) {
                     case "search":
                         films = filmService.searchFilms(currentSearchQuery, currentPage);
                         break;
                     case "home":
+                        films = recommendationService.getPersonalizedRecommendations(user.getId(), 20 * currentPage);
+                        // Skip already displayed films for pagination
+                        int skip = (currentPage - 1) * 20;
+                        if (skip > 0 && films.size() > skip) {
+                            films = films.subList(skip, films.size());
+                        } else if (skip > 0) {
+                            films = List.of();
+                        }
+                        break;
                     case "popular":
                     default:
                         films = filmService.getPopularFilms(currentPage);
                         break;
                 }
                 
+                List<Film> finalFilms = films;
                 Platform.runLater(() -> {
                     loadingLabel.setVisible(false);
-                    displayFilms(films, append);
+                    displayFilms(finalFilms, append);
                     showMoreButton.setVisible(true);
                     showMoreButton.setDisable(false);
                 });
