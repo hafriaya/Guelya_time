@@ -14,6 +14,7 @@ public class Film {
     private int voteCount;
     private double popularity;
     private List<Genre> genres;
+    private Acteur director;
 
     public Film() {
         this.genres = new ArrayList<>();
@@ -48,6 +49,8 @@ public class Film {
     public List<Genre> getGenres() { return genres; }
     public void setGenres(List<Genre> genres) { this.genres = genres; }
 
+    public Acteur getDirector() { return director; }
+    public void setDirector(Acteur director) { this.director = director; }
 
 
      // Get full poster URL
