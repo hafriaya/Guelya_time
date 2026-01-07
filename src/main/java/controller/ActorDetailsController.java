@@ -137,21 +137,21 @@ public class ActorDetailsController {
     }
     
     private VBox createMovieCard(Film film) {
-        VBox card = new VBox(8);
+        VBox card = new VBox(10);
         card.setAlignment(Pos.TOP_CENTER);
-        card.setPrefWidth(150);
-        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;");
+        card.setPrefWidth(160);
+        card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand;");
         
         // Movie Poster
         ImageView posterView = new ImageView();
-        posterView.setFitWidth(130);
-        posterView.setFitHeight(195);
+        posterView.setFitWidth(140);
+        posterView.setFitHeight(210);
         posterView.setPreserveRatio(false);
         
         // Rounded corners for poster
-        Rectangle clip = new Rectangle(130, 195);
-        clip.setArcWidth(15);
-        clip.setArcHeight(15);
+        Rectangle clip = new Rectangle(140, 210);
+        clip.setArcWidth(12);
+        clip.setArcHeight(12);
         posterView.setClip(clip);
         
         String posterUrl = film.getFullPosterUrl();
@@ -165,14 +165,14 @@ public class ActorDetailsController {
         
         // Movie Title
         Label titleLabel = new Label(film.getTitle());
-        titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 13px; -fx-font-weight: bold;");
         titleLabel.setWrapText(true);
-        titleLabel.setMaxWidth(130);
+        titleLabel.setMaxWidth(140);
         titleLabel.setAlignment(Pos.CENTER);
         
-        // Rating
+        // Rating badge
         Label ratingLabel = new Label(String.format("★ %.1f", film.getVoteAverage()));
-        ratingLabel.setStyle("-fx-text-fill: #f1c40f; -fx-font-size: 11px;");
+        ratingLabel.setStyle("-fx-background-color: rgba(241, 196, 15, 0.2); -fx-text-fill: #f1c40f; -fx-padding: 4 10; -fx-background-radius: 6; -fx-font-size: 11px; -fx-font-weight: bold;");
         
         card.getChildren().addAll(posterView, titleLabel, ratingLabel);
         
@@ -183,8 +183,16 @@ public class ActorDetailsController {
         });
         
         // Hover effect
-        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #1e3057; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
-        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        card.setOnMouseEntered(e -> {
+            card.setStyle("-fx-background-color: #252525; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123, 91, 245, 0.3), 12, 0, 0, 4);");
+            card.setScaleX(1.03);
+            card.setScaleY(1.03);
+        });
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand;");
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+        });
         
         return card;
     }

@@ -81,15 +81,16 @@ public class OnboardingController {
     }
     
     private VBox createMovieCard(Film film) {
-        VBox card = new VBox(5);
-        card.setPrefWidth(140);
-        card.setStyle("-fx-background-color: #16213e; -fx-padding: 8; -fx-cursor: hand; -fx-background-radius: 8;");
+        VBox card = new VBox(8);
+        card.setPrefWidth(160);
+        card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12;");
         
         // poster
         ImageView poster = new ImageView();
-        poster.setFitWidth(124);
-        poster.setFitHeight(186);
+        poster.setFitWidth(140);
+        poster.setFitHeight(210);
         poster.setPreserveRatio(true);
+        poster.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 4);");
         
         String posterUrl = film.getFullPosterUrl();
         if (posterUrl != null) {
@@ -102,22 +103,22 @@ public class OnboardingController {
         
         // title
         Label title = new Label(film.getTitle());
-        title.setStyle("-fx-text-fill: white; -fx-font-size: 11px;");
+        title.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-font-weight: bold;");
         title.setWrapText(true);
-        title.setMaxWidth(124);
+        title.setMaxWidth(140);
         
         // checkbox for selection
-        CheckBox selectBox = new CheckBox("Sélectionner");
-        selectBox.setStyle("-fx-text-fill: #aaa;");
+        CheckBox selectBox = new CheckBox("Select");
+        selectBox.setStyle("-fx-text-fill: #b3b3b3;");
         
         // handle selection
         selectBox.setOnAction(e -> {
             if (selectBox.isSelected()) {
                 selectedMovieIds.add(film.getId());
-                card.setStyle("-fx-background-color: #2d4a3e; -fx-padding: 8; -fx-cursor: hand; -fx-background-radius: 8; -fx-border-color: #27ae60; -fx-border-radius: 8;");
+                card.setStyle("-fx-background-color: #1e3d2f; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12; -fx-border-color: #2ecc71; -fx-border-radius: 12; -fx-border-width: 2;");
             } else {
                 selectedMovieIds.remove(film.getId());
-                card.setStyle("-fx-background-color: #16213e; -fx-padding: 8; -fx-cursor: hand; -fx-background-radius: 8;");
+                card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12;");
             }
             updateSelectionCount();
         });
@@ -132,20 +133,32 @@ public class OnboardingController {
             }
         });
         
+        // Hover effect (only when not selected)
+        card.setOnMouseEntered(e -> {
+            if (!selectBox.isSelected()) {
+                card.setStyle("-fx-background-color: #252525; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(123, 91, 245, 0.3), 12, 0, 0, 4);");
+            }
+        });
+        card.setOnMouseExited(e -> {
+            if (!selectBox.isSelected()) {
+                card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-cursor: hand; -fx-background-radius: 12;");
+            }
+        });
+        
         return card;
     }
     
     private void updateSelectionCount() {
         int count = selectedMovieIds.size();
-        selectionCountLabel.setText(count + " film(s) sélectionné(s)");
+        selectionCountLabel.setText(String.valueOf(count));
         
         // enable submit only if 3+ selected
         if (count >= 3) {
             submitButton.setDisable(false);
-            selectionCountLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 14px;");
+            selectionCountLabel.setStyle("-fx-text-fill: #2ecc71; -fx-font-size: 24px; -fx-font-weight: bold;");
         } else {
             submitButton.setDisable(true);
-            selectionCountLabel.setStyle("-fx-text-fill: #e94560; -fx-font-size: 14px;");
+            selectionCountLabel.setStyle("-fx-text-fill: #7b5bf5; -fx-font-size: 24px; -fx-font-weight: bold;");
         }
     }
     

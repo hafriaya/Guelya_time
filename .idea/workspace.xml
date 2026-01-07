@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a89385cb-42fa-4d32-bb82-8b23638e0674" name="Changes" comment="" />
+    <list default="true" id="a89385cb-42fa-4d32-bb82-8b23638e0674" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/config/SceneManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/config/SceneManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/controller/MovieDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/MovieDetailsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Acteur.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Acteur.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/Film.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Film.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/service/TmdbService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/service/TmdbService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/movie-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/fxml/movie-details.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/model/ActeurTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/model/ActeurTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/service/TmdbServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/service/TmdbServiceTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,41 +51,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.MainApp.executor&quot;: &quot;Run&quot;,
-    &quot;Application.TestDB.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ActeurTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.FilmServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.FilmTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.GenreSyncTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.GenreTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.RecommendationServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.TmdbServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserServiceTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserServiceTest.testChangePasswordWrongCurrent.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UserTest.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/projects/java/projet/Guelya_time/pom.xml&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MainApp.executor": "Run",
+    "Application.TestDB.executor": "Run",
+    "JUnit.ActeurTest.executor": "Run",
+    "JUnit.FilmServiceTest.executor": "Run",
+    "JUnit.FilmTest.executor": "Run",
+    "JUnit.GenreSyncTest.executor": "Run",
+    "JUnit.GenreTest.executor": "Run",
+    "JUnit.RecommendationServiceTest.executor": "Run",
+    "JUnit.TmdbServiceTest.executor": "Run",
+    "JUnit.UserServiceTest.executor": "Run",
+    "JUnit.UserServiceTest.testChangePasswordWrongCurrent.executor": "Run",
+    "JUnit.UserTest.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/projects/java/projet/Guelya_time/pom.xml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="UserServiceTest.testChangePasswordWrongCurrent" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="Guelya_time" />
@@ -129,7 +140,11 @@
       <workItem from="1767782154813" duration="232000" />
       <workItem from="1767782488913" duration="500000" />
       <workItem from="1767783010188" duration="1305000" />
-      <workItem from="1767784345060" duration="299000" />
+      <workItem from="1767784345060" duration="1428000" />
+      <workItem from="1767791867945" duration="239000" />
+      <workItem from="1767792144918" duration="190000" />
+      <workItem from="1767792370271" duration="498000" />
+      <workItem from="1767792903876" duration="406000" />
     </task>
     <servers />
   </component>

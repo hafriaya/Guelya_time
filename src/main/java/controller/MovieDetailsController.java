@@ -119,7 +119,9 @@ public class MovieDetailsController {
         if (currentFilm.getGenres() != null) {
             for (Genre genre : currentFilm.getGenres()) {
                 Label genreTag = new Label(genre.getName());
-                genreTag.setStyle("-fx-background-color: #e94560; -fx-text-fill: white; -fx-padding: 5 12; -fx-background-radius: 15; -fx-font-size: 12px;");
+                genreTag.setStyle("-fx-background-color: rgba(123, 91, 245, 0.2); -fx-text-fill: #a890ff; -fx-padding: 6 14; -fx-background-radius: 20; -fx-font-size: 12px; -fx-font-weight: bold;");
+                genreTag.setOnMouseEntered(e -> genreTag.setStyle("-fx-background-color: rgba(123, 91, 245, 0.4); -fx-text-fill: #ffffff; -fx-padding: 6 14; -fx-background-radius: 20; -fx-font-size: 12px; -fx-font-weight: bold;"));
+                genreTag.setOnMouseExited(e -> genreTag.setStyle("-fx-background-color: rgba(123, 91, 245, 0.2); -fx-text-fill: #a890ff; -fx-padding: 6 14; -fx-background-radius: 20; -fx-font-size: 12px; -fx-font-weight: bold;"));
                 genresContainer.getChildren().add(genreTag);
             }
         }
@@ -146,18 +148,18 @@ public class MovieDetailsController {
     private void updateButtonStates() {
         if (isInWatchlist) {
             watchlistButton.setText("✓ In My List");
-            watchlistButton.setStyle("-fx-background-color: #1e5631; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand;");
+            watchlistButton.setStyle("-fx-background-color: #1e5631; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand; -fx-background-radius: 8;");
         } else {
             watchlistButton.setText("+ Add to My List");
-            watchlistButton.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand;");
+            watchlistButton.setStyle("-fx-background-color: #7b5bf5; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand; -fx-background-radius: 8;");
         }
         
         if (isInFavorites) {
             favoriteButton.setText("♥ In Favorites");
-            favoriteButton.setStyle("-fx-background-color: #8b1538; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand;");
+            favoriteButton.setStyle("-fx-background-color: #8b1538; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand; -fx-background-radius: 8;");
         } else {
             favoriteButton.setText("♥ Add to Favorites");
-            favoriteButton.setStyle("-fx-background-color: #e94560; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand;");
+            favoriteButton.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 20; -fx-cursor: hand; -fx-background-radius: 8;");
         }
     }
     
@@ -266,21 +268,21 @@ public class MovieDetailsController {
     }
     
     private VBox createActorCard(Acteur acteur) {
-        VBox card = new VBox(8);
+        VBox card = new VBox(10);
         card.setAlignment(Pos.TOP_CENTER);
-        card.setPrefWidth(120);
-        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;");
+        card.setPrefWidth(130);
+        card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand;");
         
         // Actor Photo
         ImageView photoView = new ImageView();
-        photoView.setFitWidth(100);
-        photoView.setFitHeight(120);
+        photoView.setFitWidth(105);
+        photoView.setFitHeight(130);
         photoView.setPreserveRatio(false);
         
         // Rounded corners for photo
-        Rectangle clip = new Rectangle(100, 120);
-        clip.setArcWidth(15);
-        clip.setArcHeight(15);
+        Rectangle clip = new Rectangle(105, 130);
+        clip.setArcWidth(12);
+        clip.setArcHeight(12);
         photoView.setClip(clip);
         
         String profileUrl = acteur.getFullProfileUrl();
@@ -289,22 +291,22 @@ public class MovieDetailsController {
                 photoView.setImage(new Image(profileUrl, true));
             } catch (Exception e) {
                 // Use placeholder style
-                photoView.setStyle("-fx-background-color: #333;");
+                photoView.setStyle("-fx-background-color: #252525;");
             }
         }
         
         // Actor Name
         Label nameLabel = new Label(acteur.getName());
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold;");
+        nameLabel.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-font-weight: bold;");
         nameLabel.setWrapText(true);
-        nameLabel.setMaxWidth(100);
+        nameLabel.setMaxWidth(105);
         nameLabel.setAlignment(Pos.CENTER);
         
         // Character Name
         Label characterLabel = new Label(acteur.getCharacter() != null ? acteur.getCharacter() : "");
-        characterLabel.setStyle("-fx-text-fill: #888888; -fx-font-size: 10px;");
+        characterLabel.setStyle("-fx-text-fill: #666666; -fx-font-size: 10px;");
         characterLabel.setWrapText(true);
-        characterLabel.setMaxWidth(100);
+        characterLabel.setMaxWidth(105);
         characterLabel.setAlignment(Pos.CENTER);
         
         card.getChildren().addAll(photoView, nameLabel, characterLabel);
@@ -314,8 +316,16 @@ public class MovieDetailsController {
         card.setOnMouseClicked(e -> showActorDetails(acteur));
         
         // Hover effect
-        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #1e3057; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
-        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        card.setOnMouseEntered(e -> {
+            card.setStyle("-fx-background-color: #252525; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123, 91, 245, 0.3), 12, 0, 0, 4);");
+            card.setScaleX(1.03);
+            card.setScaleY(1.03);
+        });
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand;");
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+        });
         
         return card;
     }
@@ -372,8 +382,8 @@ public class MovieDetailsController {
         directorContainer.setOnMouseClicked(e -> showDirectorDetails(director));
         
         // Hover effect on director name
-        directorLabel.setOnMouseEntered(e -> directorLabel.setStyle("-fx-text-fill: #ff6b81; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand; -fx-underline: true;"));
-        directorLabel.setOnMouseExited(e -> directorLabel.setStyle("-fx-text-fill: #e94560; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"));
+        directorLabel.setOnMouseEntered(e -> directorLabel.setStyle("-fx-text-fill: #a890ff; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand; -fx-underline: true;"));
+        directorLabel.setOnMouseExited(e -> directorLabel.setStyle("-fx-text-fill: #7b5bf5; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;"));
     }
     
     private void displayDirectorFilms(List<Film> films) {
@@ -402,21 +412,21 @@ public class MovieDetailsController {
     }
     
     private VBox createFilmCard(Film film) {
-        VBox card = new VBox(8);
+        VBox card = new VBox(10);
         card.setAlignment(Pos.TOP_CENTER);
-        card.setPrefWidth(140);
-        card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;");
+        card.setPrefWidth(150);
+        card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand;");
         
         // Poster
         ImageView posterView = new ImageView();
-        posterView.setFitWidth(120);
-        posterView.setFitHeight(180);
+        posterView.setFitWidth(130);
+        posterView.setFitHeight(195);
         posterView.setPreserveRatio(false);
         
         // Rounded corners
-        Rectangle clip = new Rectangle(120, 180);
-        clip.setArcWidth(15);
-        clip.setArcHeight(15);
+        Rectangle clip = new Rectangle(130, 195);
+        clip.setArcWidth(12);
+        clip.setArcHeight(12);
         posterView.setClip(clip);
         
         String posterUrl = film.getFullPosterUrl();
@@ -430,14 +440,14 @@ public class MovieDetailsController {
         
         // Title
         Label titleLbl = new Label(film.getTitle());
-        titleLbl.setStyle("-fx-text-fill: white; -fx-font-size: 11px; -fx-font-weight: bold;");
+        titleLbl.setStyle("-fx-text-fill: #ffffff; -fx-font-size: 12px; -fx-font-weight: bold;");
         titleLbl.setWrapText(true);
-        titleLbl.setMaxWidth(120);
+        titleLbl.setMaxWidth(130);
         titleLbl.setAlignment(Pos.CENTER);
         
-        // Rating
+        // Rating badge
         Label ratingLbl = new Label(String.format("★ %.1f", film.getVoteAverage()));
-        ratingLbl.setStyle("-fx-text-fill: #f1c40f; -fx-font-size: 10px;");
+        ratingLbl.setStyle("-fx-background-color: rgba(241, 196, 15, 0.2); -fx-text-fill: #f1c40f; -fx-padding: 3 8; -fx-background-radius: 6; -fx-font-size: 11px; -fx-font-weight: bold;");
         
         card.getChildren().addAll(posterView, titleLbl, ratingLbl);
         
@@ -448,8 +458,16 @@ public class MovieDetailsController {
         });
         
         // Hover effect
-        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #1e3057; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
-        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: #16213e; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand;"));
+        card.setOnMouseEntered(e -> {
+            card.setStyle("-fx-background-color: #252525; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(123, 91, 245, 0.3), 12, 0, 0, 4);");
+            card.setScaleX(1.03);
+            card.setScaleY(1.03);
+        });
+        card.setOnMouseExited(e -> {
+            card.setStyle("-fx-background-color: #1a1a1a; -fx-padding: 12; -fx-background-radius: 12; -fx-cursor: hand;");
+            card.setScaleX(1.0);
+            card.setScaleY(1.0);
+        });
         
         return card;
     }
