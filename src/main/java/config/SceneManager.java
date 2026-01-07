@@ -5,13 +5,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.Film;
-import controller.MovieDetailsController;
 
 import java.io.IOException;
 
 public class SceneManager {
     private static SceneManager instance;
     private Stage primaryStage;
+    private Film selectedFilm;
 
     private SceneManager() {}
 
@@ -21,6 +21,12 @@ public class SceneManager {
     }
 
     public void setStage(Stage stage) { this.primaryStage = stage; }
+    
+    public Stage getStage() { return primaryStage; }
+    
+    public void setSelectedFilm(Film film) { this.selectedFilm = film; }
+    
+    public Film getSelectedFilm() { return selectedFilm; }
 
     public void switchTo(String fxmlName) {
         try {
@@ -33,17 +39,7 @@ public class SceneManager {
     }
     
     public void showMovieDetails(Film film) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/movie-details.fxml"));
-            Parent root = loader.load();
-            
-            MovieDetailsController controller = loader.getController();
-            controller.setFilm(film);
-            
-            primaryStage.setScene(new Scene(root));
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setSelectedFilm(film);
+        switchTo("movie-details");
     }
 }
