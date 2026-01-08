@@ -1,0 +1,118 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Guelya Time - Dark Theme (Matching Desktop App) */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply antialiased bg-bg-primary text-text-primary;
+  }
+
+  /* Focus visible pour l'accessibilité */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent-primary;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent-primary;
+  }
+}
+
+/* Composants réutilisables */
+@layer components {
+  /* Animation pour les formulaires */
+  .form-input {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Card style matching desktop */
+  .card {
+    @apply bg-bg-secondary border border-border rounded-xl p-6;
+  }
+
+  .card-elevated {
+    @apply bg-bg-secondary border border-border rounded-xl p-6 shadow-lg shadow-black/30;
+  }
+
+  /* Animation de fade-in */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  /* Animation de slide-up */
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+}
+
+/* Utilitaires personnalisés */
+@layer utilities {
+  /* Masquer la scrollbar tout en gardant le scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Gradient text matching desktop app title */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent-primary to-accent-secondary;
+  }
+
+  /* Glow effect for buttons */
+  .glow-purple {
+    box-shadow: 0 4px 12px rgba(123, 91, 245, 0.4);
+  }
+}
+
+/* Animations keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation du spinner de chargement */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

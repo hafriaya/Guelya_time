@@ -5,112 +5,37 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.guelya</groupId>
-    <artifactId>Guelya_time</artifactId>
+    <artifactId>guelya-time-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>Guelya_time</name>
+    <packaging>pom</packaging>
+    <name>Guelya Time - Parent</name>
+    <description>Parent POM for Guelya Time multi-module project</description>
+
+    <modules>
+        <module>desktop-app</module>
+        <module>register-api</module>
+    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <javafx.version>17.0.14</javafx.version>
-        <javafx.platform>win</javafx.platform>
-        <!-- If using Linux: linux / Mac Intel: mac / Mac M1+: mac-aarch64 -->
-        <junit.version>5.12.1</junit.version>
+        <java.version>17</java.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
-    <dependencies>
-
-        <!-- JavaFX (with platform classifiers) -->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-graphics</artifactId>
-            <version>${javafx.version}</version>
-            <classifier>${javafx.platform}</classifier>
-        </dependency>
-
-        <!-- JUnit -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.8.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.8.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Neo4j Driver -->
-        <dependency>
-            <groupId>org.neo4j.driver</groupId>
-            <artifactId>neo4j-java-driver</artifactId>
-            <version>5.17.0</version>
-        </dependency>
-
-        <!-- BCrypt hashing -->
-        <dependency>
-            <groupId>org.mindrot</groupId>
-            <artifactId>jbcrypt</artifactId>
-            <version>0.4</version>
-        </dependency>
-
-    </dependencies>
-
     <build>
-        <plugins>
-
-            <!-- Java Compiler -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                </configuration>
-            </plugin>
-
-            <!-- JavaFX Maven Plugin -->
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.8</version>
-                <configuration>
-                    <mainClass>app.MainApp</mainClass>
-                </configuration>
-            </plugin>
-
-        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                    <configuration>
+                        <source>17</source>
+                        <target>17</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>
