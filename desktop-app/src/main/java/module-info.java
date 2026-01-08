@@ -4,6 +4,7 @@ module Guelya_time {
     requires javafx.graphics;
     requires org.neo4j.driver;
     requires jbcrypt;
+    requires java.desktop;
 
     // Ouvrir les packages au framework JavaFX
     opens controller to javafx.fxml;

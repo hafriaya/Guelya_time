@@ -57,10 +57,25 @@
                 styleClass="button-primary"
                 style="-fx-font-size: 15px;"/>
         
+        <!-- Separator -->
+        <HBox alignment="CENTER" spacing="10">
+            <Region HBox.hgrow="ALWAYS" style="-fx-background-color: #3a3a3a; -fx-min-height: 1; -fx-max-height: 1;"/>
+            <Label text="or" styleClass="text-muted" style="-fx-font-size: 12px;"/>
+            <Region HBox.hgrow="ALWAYS" style="-fx-background-color: #3a3a3a; -fx-min-height: 1; -fx-max-height: 1;"/>
+        </HBox>
+        
+        <!-- Register button -->
+        <Button fx:id="registerButton" 
+                text="Create Account" 
+                onAction="#handleRegister"
+                prefWidth="300"
+                prefHeight="45"
+                style="-fx-background-color: transparent; -fx-border-color: #7b5bf5; -fx-border-width: 2; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #7b5bf5; -fx-font-size: 15px; -fx-font-weight: bold; -fx-cursor: hand;"/>
+        
     </VBox>
     
     <!-- Footer Info -->
-    <Label text="Don't have an account? Sign up on our website." styleClass="text-muted" style="-fx-font-size: 12px; -fx-padding: 20 0 0 0;"/>
+    <Label text="Register on our website to create your account" styleClass="text-muted" style="-fx-font-size: 12px; -fx-padding: 20 0 0 0;"/>
     
 </VBox>
 
