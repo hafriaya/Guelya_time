@@ -1,5 +1,7 @@
 package controller;
 
+import java.awt.Desktop;
+import java.net.URI;
 import java.util.Optional;
 
 import config.SceneManager;
@@ -22,12 +24,17 @@ public class LoginController {
 
     @FXML
     private Button loginButton;
+    
+    @FXML
+    private Button registerButton;
 
     @FXML
     private Label errorLabel;
 
 
     private UserService userService;
+    
+    private static final String REGISTER_URL = "http://localhost:3000/register";
 
     public LoginController(){
         this.userService = new UserService();
@@ -117,8 +124,27 @@ public class LoginController {
         }).start();
     }
 
-
-
-
+    @FXML
+    private void handleRegister() {
+        try {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(REGISTER_URL));
+            } else {
+                // Fallback for systems where Desktop is not supported
+                Runtime runtime = Runtime.getRuntime();
+                String os = System.getProperty("os.name").toLowerCase();
+                if (os.contains("win")) {
+                    runtime.exec("rundll32 url.dll,FileProtocolHandler " + REGISTER_URL);
+                } else if (os.contains("mac")) {
+                    runtime.exec("open " + REGISTER_URL);
+                } else if (os.contains("nix") || os.contains("nux")) {
+                    runtime.exec("xdg-open " + REGISTER_URL);
+                }
+            }
+        } catch (Exception e) {
+            showError("Unable to open browser. Please visit: " + REGISTER_URL);
+            e.printStackTrace();
+        }
+    }
     
 }
