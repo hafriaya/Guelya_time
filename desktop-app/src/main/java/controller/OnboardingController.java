@@ -48,23 +48,34 @@ public class OnboardingController {
         loadingLabel.setVisible(true);
         loadMoreButton.setDisable(true);
         
-        new Thread(() -> {
-            try {
-                List<Film> films = filmService.getPopularFilms(currentPage);
-                Platform.runLater(() -> {
-                    displayMovies(films);
-                    loadingLabel.setVisible(false);
-                    loadMoreButton.setDisable(false);
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    loadingLabel.setText("Erreur de chargement");
-                    loadingLabel.setVisible(true);
-                    loadMoreButton.setDisable(false);
-                });
-                e.printStackTrace();
+        Thread loaderThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    List<Film> films = filmService.getPopularFilms(currentPage);
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            displayMovies(films);
+                            loadingLabel.setVisible(false);
+                            loadMoreButton.setDisable(false);
+                        }
+                    });
+                } catch (Exception e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadingLabel.setText("Erreur de chargement");
+                            loadingLabel.setVisible(true);
+                            loadMoreButton.setDisable(false);
+                        }
+                    });
+                    e.printStackTrace();
+                }
             }
-        }).start();
+        });
+        loaderThread.setDaemon(true);
+        loaderThread.start();
     }
     
     @FXML
@@ -171,49 +182,63 @@ public class OnboardingController {
         submitButton.setDisable(true);
         submitButton.setText("Enregistrement...");
         
-        new Thread(() -> {
-            try {
-                User user = SessionService.getInstance().getCurrentUser();
-                
-                // Save selected movies to favorites and extract genres
-                Set<Integer> allGenreIds = new HashSet<>();
-                for (Long filmId : selectedMovieIds) {
-                    // Add to favorites
-                    filmService.addToFavorites(user.getId(), filmId);
-                    
-                    // Get film and extract genres
-                    filmService.getFilmById(filmId).ifPresent(film -> {
-                        if (film.getGenres() != null) {
-                            allGenreIds.addAll(
-                                film.getGenres().stream()
-                                    .map(g -> g.getId())
-                                    .collect(Collectors.toList())
-                            );
+        Thread submitThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    User user = SessionService.getInstance().getCurrentUser();
+
+                    // Save selected movies to favorites and extract genres
+                    Set<Integer> allGenreIds = new HashSet<>();
+                    for (Long filmId : selectedMovieIds) {
+                        // Add to favorites
+                        filmService.addToFavorites(user.getId(), filmId);
+
+                        // Get film and extract genres
+                        filmService.getFilmById(filmId).ifPresent(new java.util.function.Consumer<Film>() {
+                            @Override
+                            public void accept(Film film) {
+                                if (film.getGenres() != null) {
+                                    allGenreIds.addAll(
+                                            film.getGenres().stream()
+                                                    .map(g -> g.getId())
+                                                    .collect(Collectors.toList())
+                                    );
+                                }
+                            }
+                        });
+                    }
+
+                    // Save extracted genres to user preferences
+                    if (!allGenreIds.isEmpty()) {
+                        genreRepository.setUserFavoriteGenres(user.getId(), new java.util.ArrayList<>(allGenreIds));
+                    }
+
+                    // Mark onboarding as completed
+                    userService.completeOnboarding(user.getId());
+                    user.setOnboardingCompleted(true);
+                    SessionService.getInstance().setCurrentUser(user);
+
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            SceneManager.getInstance().switchTo("dashboard");
                         }
                     });
+                } catch (Exception e) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            submitButton.setDisable(false);
+                            submitButton.setText("Continuer");
+                        }
+                    });
+                    e.printStackTrace();
                 }
-                
-                // Save extracted genres to user preferences
-                if (!allGenreIds.isEmpty()) {
-                    genreRepository.setUserFavoriteGenres(user.getId(), new java.util.ArrayList<>(allGenreIds));
-                }
-                
-                // Mark onboarding as completed
-                userService.completeOnboarding(user.getId());
-                user.setOnboardingCompleted(true);
-                SessionService.getInstance().setCurrentUser(user);
-                
-                Platform.runLater(() -> {
-                    SceneManager.getInstance().switchTo("dashboard");
-                });
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    submitButton.setDisable(false);
-                    submitButton.setText("Continuer");
-                });
-                e.printStackTrace();
             }
-        }).start();
+        });
+        submitThread.setDaemon(true);
+        submitThread.start();
     }
 }
 

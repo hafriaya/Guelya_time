@@ -1,19 +1,22 @@
 package controller;
 
+import java.util.List;
+
 import config.SceneManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import model.Film;
 import model.User;
 import service.FilmService;
 import service.RecommendationService;
 import service.SessionService;
-
-import java.util.List;
 
 public class DashboardController {
     
@@ -30,6 +33,7 @@ public class DashboardController {
     private int currentPage = 1;
     private String currentSection = "popular";
     private String currentSearchQuery = "";
+    private java.util.Set<Long> displayedFilmIds = new java.util.HashSet<>();
     
     public DashboardController() {
         this.filmService = new FilmService();
@@ -44,16 +48,17 @@ public class DashboardController {
             usernameLabel.setText("Hello, " + user.getUsername());
         }
         
-        // load popular films
-        showPopular();
+        // show recommendations by default after login
+        showRecommendations();
     }
     
     @FXML
-    private void showHome() {
-        currentSection = "home";
+    private void showRecommendations() {
+        currentSection = "recommendation";
         currentPage = 1;
         sectionTitle.setText("Recommendations for You");
         filmsContainer.getChildren().clear();
+        displayedFilmIds.clear();
         loadFilms(false);
     }
     
@@ -63,6 +68,7 @@ public class DashboardController {
         currentPage = 1;
         sectionTitle.setText("Popular Movies");
         filmsContainer.getChildren().clear();
+        displayedFilmIds.clear();
         loadFilms(false);
     }
     
@@ -72,6 +78,7 @@ public class DashboardController {
         currentPage = 1;
         sectionTitle.setText("My List");
         filmsContainer.getChildren().clear();
+        displayedFilmIds.clear();
         showMoreButton.setVisible(false);
         
         User user = SessionService.getInstance().getCurrentUser();
@@ -86,6 +93,7 @@ public class DashboardController {
         currentPage = 1;
         sectionTitle.setText("Favorites");
         filmsContainer.getChildren().clear();
+        displayedFilmIds.clear();
         showMoreButton.setVisible(false);
         
         User user = SessionService.getInstance().getCurrentUser();
@@ -103,6 +111,7 @@ public class DashboardController {
             currentPage = 1;
             sectionTitle.setText("Results for: " + query);
             filmsContainer.getChildren().clear();
+            displayedFilmIds.clear();
             loadFilms(false);
         }
     }
@@ -132,15 +141,13 @@ public class DashboardController {
                     case "search":
                         films = filmService.searchFilms(currentSearchQuery, currentPage);
                         break;
-                    case "home":
-                        films = recommendationService.getPersonalizedRecommendations(user.getId(), 20 * currentPage);
-                        // Skip already displayed films for pagination
-                        int skip = (currentPage - 1) * 20;
-                        if (skip > 0 && films.size() > skip) {
-                            films = films.subList(skip, films.size());
-                        } else if (skip > 0) {
-                            films = List.of();
-                        }
+                    case "recommendation":
+                        // Request a page worth of recommendations and filter out already shown ones.
+                        List<Film> recs = recommendationService.getPersonalizedRecommendations(user.getId(), 20);
+                        // Filter duplicates that were already displayed
+                        films = recs.stream()
+                                .filter(f -> !displayedFilmIds.contains(f.getId()))
+                                .collect(java.util.stream.Collectors.toList());
                         break;
                     case "popular":
                     default:
@@ -201,6 +208,8 @@ public class DashboardController {
         for (Film film : films) {
             VBox filmCard = createFilmCard(film);
             filmsContainer.getChildren().add(filmCard);
+            // Track which films are displayed to avoid duplicates for recommendations
+            try { displayedFilmIds.add(film.getId()); } catch (Exception ignored) {}
         }
     }
     
@@ -216,10 +225,12 @@ public class DashboardController {
         poster.setPreserveRatio(true);
         poster.setStyle("-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0, 0, 4);");
         
-        String posterUrl = film.getFullPosterUrl();
+        // Use smaller poster for faster loading in grid view
+        String posterUrl = film.getSmallPosterUrl();
         if (posterUrl != null) {
             try {
-                poster.setImage(new Image(posterUrl, true));
+                // backgroundLoading=true for async image loading
+                poster.setImage(new Image(posterUrl, 140, 210, true, true, true));
             } catch (Exception e) {
                 // use placeholder if image fails
             }

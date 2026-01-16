@@ -53,9 +53,15 @@ public class Film {
     public void setDirector(Acteur director) { this.director = director; }
 
 
-     // Get full poster URL
+     // Get full poster URL (high quality for details view)
     public String getFullPosterUrl() {
         if (posterPath == null || posterPath.isEmpty()) return null;
         return "https://image.tmdb.org/t/p/w500" + posterPath;
+    }
+    
+    // Get small poster URL (faster loading for grid/list views)
+    public String getSmallPosterUrl() {
+        if (posterPath == null || posterPath.isEmpty()) return null;
+        return "https://image.tmdb.org/t/p/w185" + posterPath;
     }
 }

@@ -6,7 +6,6 @@
 <?import javafx.geometry.Insets?>
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="controller.ActorDetailsController"
-            prefWidth="1100" prefHeight="800"
             stylesheets="@../css/styles.css"
             styleClass="root">
     

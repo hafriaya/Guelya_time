@@ -6,6 +6,7 @@ import model.Film;
 import model.Genre;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,11 +15,54 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.*;
+import java.util.zip.GZIPInputStream;
 
 public class TmdbService {
     private final String apiKey;
     private final String baseUrl;
     private static Map<Integer, String> genreCache; // Static cache shared across instances
+    
+    // Movie cache with expiration for faster repeated lookups
+    private static final Map<Long, CachedFilm> movieCache = new ConcurrentHashMap<>();
+    private static final long CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
+    
+    // Movie list cache for popular/top-rated pages
+    private static final Map<String, CachedList> listCache = new ConcurrentHashMap<>();
+    private static final long LIST_CACHE_DURATION_MS = 10 * 60 * 1000; // 10 minutes
+    
+    // ExecutorService for parallel requests
+    private static final ExecutorService executor = Executors.newFixedThreadPool(5);
+    
+    // Cache wrapper with timestamp for individual movies
+    private static class CachedFilm {
+        final Film film;
+        final long timestamp;
+        
+        CachedFilm(Film film) {
+            this.film = film;
+            this.timestamp = System.currentTimeMillis();
+        }
+        
+        boolean isExpired() {
+            return System.currentTimeMillis() - timestamp > CACHE_DURATION_MS;
+        }
+    }
+    
+    // Cache wrapper for movie lists
+    private static class CachedList {
+        final List<Film> films;
+        final long timestamp;
+        
+        CachedList(List<Film> films) {
+            this.films = new ArrayList<>(films);
+            this.timestamp = System.currentTimeMillis();
+        }
+        
+        boolean isExpired() {
+            return System.currentTimeMillis() - timestamp > LIST_CACHE_DURATION_MS;
+        }
+    }
 
     public TmdbService() {
         this.apiKey = Neo4jConfig.getProperty("tmdb.api.key", "22c0aa4a342097dd598f010fd52eb22c");
@@ -110,16 +154,40 @@ public class TmdbService {
         genreCache = null;
     }
 
-    // Get popular movies
+    // Get popular movies (with caching)
     public List<Film> getPopularMovies(int page) {
+        String cacheKey = "popular_" + page;
+        CachedList cached = listCache.get(cacheKey);
+        if (cached != null && !cached.isExpired()) {
+            System.out.println("[Cache hit] Popular movies page " + page);
+            return new ArrayList<>(cached.films);
+        }
+        
         String url = baseUrl + "/movie/popular?api_key=" + apiKey + "&language=fr-FR&page=" + page;
-        return fetchMovieList(url);
+        List<Film> films = fetchMovieList(url);
+        
+        if (!films.isEmpty()) {
+            listCache.put(cacheKey, new CachedList(films));
+        }
+        return films;
     }
 
-    // Get top rated movies
+    // Get top rated movies (with caching)
     public List<Film> getTopRatedMovies(int page) {
+        String cacheKey = "toprated_" + page;
+        CachedList cached = listCache.get(cacheKey);
+        if (cached != null && !cached.isExpired()) {
+            System.out.println("[Cache hit] Top rated movies page " + page);
+            return new ArrayList<>(cached.films);
+        }
+        
         String url = baseUrl + "/movie/top_rated?api_key=" + apiKey + "&language=fr-FR&page=" + page;
-        return fetchMovieList(url);
+        List<Film> films = fetchMovieList(url);
+        
+        if (!films.isEmpty()) {
+            listCache.put(cacheKey, new CachedList(films));
+        }
+        return films;
     }
 
     // Search movies
@@ -171,15 +239,17 @@ public class TmdbService {
         return films;
     }
 
-    // Fetch JSON from URL
+    // Fetch JSON from URL with gzip support and optimized settings
     private String fetchJson(String urlString) {
         try {
             URL url = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
-            conn.setConnectTimeout(10000);
-            conn.setReadTimeout(10000);
+            conn.setRequestProperty("Accept-Encoding", "gzip"); // Request compressed responses
+            conn.setConnectTimeout(5000);  // Reduced timeout for faster failure
+            conn.setReadTimeout(5000);
+            conn.setUseCaches(true);       // Enable HTTP caching
 
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
@@ -187,14 +257,22 @@ public class TmdbService {
                 return null;
             }
 
+            // Handle gzip compressed responses
+            InputStream inputStream = conn.getInputStream();
+            String encoding = conn.getContentEncoding();
+            if ("gzip".equalsIgnoreCase(encoding)) {
+                inputStream = new GZIPInputStream(inputStream);
+            }
+
             BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream())
+                    new InputStreamReader(inputStream, "UTF-8")
             );
 
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
+            StringBuilder response = new StringBuilder(8192); // Pre-allocate buffer
+            char[] buffer = new char[4096];
+            int read;
+            while ((read = reader.read(buffer)) != -1) {
+                response.append(buffer, 0, read);
             }
 
             reader.close();
@@ -379,14 +457,71 @@ public class TmdbService {
     // ==================== MOVIE DETAILS ====================
 
     /**
-     * Get detailed information about a specific movie
+     * Get detailed information about a specific movie (with caching)
      */
     public Film getMovieDetails(long movieId) {
+        // Check cache first
+        CachedFilm cached = movieCache.get(movieId);
+        if (cached != null && !cached.isExpired()) {
+            System.out.println("[Cache hit] Movie " + movieId);
+            return cached.film;
+        }
+        
         String url = baseUrl + "/movie/" + movieId + "?api_key=" + apiKey + "&language=fr-FR";
         String json = fetchJson(url);
         if (json == null) return null;
 
-        return parseMovieDetails(json);
+        Film film = parseMovieDetails(json);
+        
+        // Cache the result
+        if (film != null) {
+            movieCache.put(movieId, new CachedFilm(film));
+        }
+        
+        return film;
+    }
+    
+    /**
+     * Fetch multiple movies in parallel (useful for batch operations)
+     */
+    public List<Film> getMoviesInParallel(List<Long> movieIds) {
+        List<Future<Film>> futures = new ArrayList<>();
+        
+        for (Long movieId : movieIds) {
+            futures.add(executor.submit(() -> getMovieDetails(movieId)));
+        }
+        
+        List<Film> films = new ArrayList<>();
+        for (Future<Film> future : futures) {
+            try {
+                Film film = future.get(10, TimeUnit.SECONDS);
+                if (film != null) {
+                    films.add(film);
+                }
+            } catch (Exception e) {
+                System.err.println("Error fetching movie in parallel: " + e.getMessage());
+            }
+        }
+        
+        return films;
+    }
+    
+    /**
+     * Clear all caches (useful for testing or forced refresh)
+     */
+    public static void clearAllCaches() {
+        genreCache = null;
+        movieCache.clear();
+        listCache.clear();
+        System.out.println("All TMDB caches cleared");
+    }
+    
+    /**
+     * Remove expired entries from caches
+     */
+    public static void cleanupExpiredCaches() {
+        movieCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
+        listCache.entrySet().removeIf(entry -> entry.getValue().isExpired());
     }
 
     /**
