@@ -1,15 +1,23 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.Values;
+
 import config.Neo4jConfig;
 import model.Film;
 import model.Genre;
-import org.neo4j.driver.*;
-import org.neo4j.driver.Record;
 import repository.FilmRepository;
 import repository.GenreRepository;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class RecommendationService {
     private final Driver driver;
@@ -315,38 +323,54 @@ public class RecommendationService {
         if (userId == null || userId.trim().isEmpty()) {
             return getTrendingFilms(limit);
         }
+        // Run recommendation strategies in parallel to reduce latency
+        int genreLimit = Math.max(1, (int) Math.ceil(limit * 0.4));
+        int collabLimit = Math.max(1, (int) Math.ceil(limit * 0.3));
+        int ratingLimit = Math.max(1, (int) Math.ceil(limit * 0.3));
 
-        Set<Long> addedFilmIds = new HashSet<>();
+        var genreFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> getRecommendationsByFavoriteGenres(userId, genreLimit));
+        var collabFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> getCollaborativeRecommendations(userId, collabLimit));
+        var ratingFuture = java.util.concurrent.CompletableFuture.supplyAsync(() -> getRecommendationsByHighRatings(userId, ratingLimit));
+
+        // Wait for all to complete (with reasonable timeout fallback)
+        java.util.List<Film> genreRecs = List.of();
+        java.util.List<Film> collabRecs = List.of();
+        java.util.List<Film> ratingRecs = List.of();
+        try {
+            java.util.concurrent.CompletableFuture.allOf(genreFuture, collabFuture, ratingFuture)
+                    .get(3, java.util.concurrent.TimeUnit.SECONDS);
+            genreRecs = genreFuture.getNow(List.of());
+            collabRecs = collabFuture.getNow(List.of());
+            ratingRecs = ratingFuture.getNow(List.of());
+        } catch (Exception ignored) {
+            // If timeout or interruption occurs, try to get what's available quickly
+            try { genreRecs = genreFuture.getNow(genreRecs); } catch (Exception e) {}
+            try { collabRecs = collabFuture.getNow(collabRecs); } catch (Exception e) {}
+            try { ratingRecs = ratingFuture.getNow(ratingRecs); } catch (Exception e) {}
+        }
+
+        Set<Long> addedFilmIds = new LinkedHashSet<>();
         List<Film> recommendations = new ArrayList<>();
 
-        // 1. Get recommendations by favorite genres (40% of results)
-        int genreLimit = (int) Math.ceil(limit * 0.4);
-        List<Film> genreRecs = getRecommendationsByFavoriteGenres(userId, genreLimit);
+        // Merge while preserving priority: genre -> collab -> rating
         for (Film film : genreRecs) {
-            if (addedFilmIds.add(film.getId())) {
-                recommendations.add(film);
+            if (addedFilmIds.add(film.getId())) recommendations.add(film);
+            if (recommendations.size() >= limit) break;
+        }
+        if (recommendations.size() < limit) {
+            for (Film film : collabRecs) {
+                if (addedFilmIds.add(film.getId())) recommendations.add(film);
+                if (recommendations.size() >= limit) break;
+            }
+        }
+        if (recommendations.size() < limit) {
+            for (Film film : ratingRecs) {
+                if (addedFilmIds.add(film.getId())) recommendations.add(film);
+                if (recommendations.size() >= limit) break;
             }
         }
 
-        // 2. Get collaborative recommendations (30% of results)
-        int collabLimit = (int) Math.ceil(limit * 0.3);
-        List<Film> collabRecs = getCollaborativeRecommendations(userId, collabLimit);
-        for (Film film : collabRecs) {
-            if (addedFilmIds.add(film.getId())) {
-                recommendations.add(film);
-            }
-        }
-
-        // 3. Get rating-based recommendations (30% of results)
-        int ratingLimit = (int) Math.ceil(limit * 0.3);
-        List<Film> ratingRecs = getRecommendationsByHighRatings(userId, ratingLimit);
-        for (Film film : ratingRecs) {
-            if (addedFilmIds.add(film.getId())) {
-                recommendations.add(film);
-            }
-        }
-
-        // Fill remaining slots with trending films
+        // Fill remaining slots with trending films (synchronous, small limit)
         if (recommendations.size() < limit) {
             List<Film> trending = getTrendingFilms(limit - recommendations.size());
             for (Film film : trending) {

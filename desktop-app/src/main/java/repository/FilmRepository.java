@@ -99,7 +99,8 @@ public class FilmRepository {
     public void addToUserWatchlist(String userId, long filmId) {
         try (Session session = driver.session()) {
             String query = """
-                MATCH (u:User {id: $userId}), (f:Film {id: $filmId})
+                MERGE (u:User {id: $userId})
+                MERGE (f:Film {id: $filmId})
                 MERGE (u)-[r:WATCHLIST]->(f)
                 ON CREATE SET r.addedAt = $addedAt
                 """;
@@ -144,7 +145,8 @@ public class FilmRepository {
     public void addToUserFavorites(String userId, long filmId) {
         try (Session session = driver.session()) {
             String query = """
-                MATCH (u:User {id: $userId}), (f:Film {id: $filmId})
+                MERGE (u:User {id: $userId})
+                MERGE (f:Film {id: $filmId})
                 MERGE (u)-[r:FAVORITED]->(f)
                 ON CREATE SET r.addedAt = $addedAt
                 """;

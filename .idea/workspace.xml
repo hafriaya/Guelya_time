@@ -5,52 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a89385cb-42fa-4d32-bb82-8b23638e0674" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/app/MainApp.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/guelya/guelya_time/HelloApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/guelya/guelya_time/HelloController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/guelya/guelya_time/Launcher.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/config/Neo4jConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/config/SceneManager.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/ActorDetailsController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/DashboardController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/LoginController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/MovieDetailsController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/OnboardingController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Acteur.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Film.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Genre.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/User.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/FilmRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/GenreRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/repository/UserRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/FilmService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/RecommendationService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/SessionService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/TmdbService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/service/UserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/guelya/guelya_time/hello-view.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/css/styles.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/actor-details.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/dashboard.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/login.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/movie-details.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/fxml/onboarding.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/guelya/guelya_time/TestDB.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/guelya/guelya_time/UserServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/guelya/guelya_time/UserTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/model/ActeurTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/model/FilmTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/model/GenreTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/service/FilmServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/service/GenreSyncTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/service/RecommendationServiceTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/service/TmdbServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/config/SceneManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/config/SceneManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/controller/DashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/controller/DashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/controller/OnboardingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/controller/OnboardingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/model/Film.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/model/Film.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/repository/FilmRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/repository/FilmRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/service/FilmService.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/service/FilmService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/service/RecommendationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/service/RecommendationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/java/service/TmdbService.java" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/java/service/TmdbService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/actor-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/actor-details.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/dashboard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/movie-details.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/movie-details.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/onboarding.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/desktop-app/src/main/resources/fxml/onboarding.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -203,10 +170,36 @@
       <workItem from="1767902732166" duration="644000" />
       <workItem from="1767910213928" duration="1173000" />
       <workItem from="1767912120042" duration="69000" />
+      <workItem from="1767964230881" duration="460000" />
+      <workItem from="1767964777358" duration="62000" />
+      <workItem from="1768223043813" duration="1295000" />
+      <workItem from="1768230483294" duration="3550000" />
+      <workItem from="1768555722728" duration="2184000" />
+      <workItem from="1768557944634" duration="139000" />
+      <workItem from="1768558112258" duration="4220000" />
+      <workItem from="1768567790515" duration="765000" />
+      <workItem from="1768569090517" duration="775000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-core" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.security:spring-security-core" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:react" />
+    <option featureType="dependencySupport" implementationName="java:jakarta.validation:jakarta.validation-api" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:tailwindcss" />
+    <option featureType="dependencySupport" implementationName="java:io.projectreactor:reactor-core" />
+    <option featureType="dependencySupport" implementationName="executable:kubectl" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.data:spring-data-commons" />
+    <option featureType="dependencySupport" implementationName="java:org.hibernate.validator:hibernate-validator" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework:spring-webmvc" />
+    <option featureType="dependencySupport" implementationName="executable:docker" />
+    <option featureType="dependencySupport" implementationName="java:org.openjfx:javafx-base" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:next" />
+    <option featureType="dependencySupport" implementationName="java:org.springframework.boot:spring-boot" />
+    <option featureType="dependencySupport" implementationName="javascript:npm:postcss" />
   </component>
 </project>

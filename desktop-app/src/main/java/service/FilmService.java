@@ -305,10 +305,14 @@ public class FilmService {
     private void ensureFilmExists(long filmId) {
         Optional<Film> film = filmRepository.findById(filmId);
         if (film.isEmpty()) {
-            // Film not in database, try to fetch from TMDB
-            // This requires extending TmdbService with getMovieDetails(long id)
-            // For now, we just skip
-            System.out.println("Film " + filmId + " not found in database. Consider fetching from TMDB.");
+            // Film not in database, fetch from TMDB and save
+            Film tmdbFilm = tmdbService.getMovieDetails(filmId);
+            if (tmdbFilm != null) {
+                filmRepository.save(tmdbFilm);
+                System.out.println("Film " + filmId + " fetched from TMDB and saved to database.");
+            } else {
+                System.err.println("Film " + filmId + " not found in database or TMDB.");
+            }
         }
     }
 
