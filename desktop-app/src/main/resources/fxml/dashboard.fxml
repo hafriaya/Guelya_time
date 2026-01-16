@@ -6,8 +6,6 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml" 
             fx:controller="controller.DashboardController"
-            prefWidth="1100" 
-            prefHeight="700"
             stylesheets="@../css/styles.css"
             styleClass="root">
     
@@ -42,7 +40,7 @@
             
             <Label text="MENU" style="-fx-text-fill: #666666; -fx-font-size: 11px; -fx-font-weight: bold; -fx-padding: 0 0 10 5;"/>
             
-            <Button fx:id="homeButton" text="🏠  Home" onAction="#showHome" prefWidth="130" styleClass="nav-button-active"/>
+            <Button fx:id="homeButton" text="🏠  Recommendations" onAction="#showRecommendations" prefWidth="130" styleClass="nav-button-active"/>
             <Button fx:id="popularButton" text="🔥  Popular" onAction="#showPopular" prefWidth="130" styleClass="nav-button"/>
             
             <Region prefHeight="20"/>

@@ -1,13 +1,14 @@
 package config;
 
+import java.io.IOException;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import model.Acteur;
 import model.Film;
-
-import java.io.IOException;
 
 public class SceneManager {
     private static SceneManager instance;
@@ -36,8 +37,41 @@ public class SceneManager {
 
     public void switchTo(String fxmlName) {
         try {
+            // Preserve fullscreen/maximized state
+            boolean wasFullScreen = primaryStage != null && primaryStage.isFullScreen();
+            boolean wasMaximized = primaryStage != null && primaryStage.isMaximized();
+
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/" + fxmlName + ".fxml"));
-            primaryStage.setScene(new Scene(root));
+
+            // If a Scene already exists, reuse it to avoid losing fullscreen/window state.
+            if (primaryStage.getScene() == null) {
+                Scene scene = new Scene(root);
+                primaryStage.setScene(scene);
+            } else {
+                // Replace the root of the existing scene
+                primaryStage.getScene().setRoot(root);
+            }
+
+            // If root is a Region (most layouts), bind its preferred size to the stage size
+            if (root instanceof Region) {
+                Region region = (Region) root;
+                // Unbind previous bindings first (safe if none)
+                try {
+                    region.prefWidthProperty().unbind();
+                    region.prefHeightProperty().unbind();
+                } catch (Exception ignored) {}
+
+                region.prefWidthProperty().bind(primaryStage.widthProperty());
+                region.prefHeightProperty().bind(primaryStage.heightProperty());
+            }
+
+            // Restore fullscreen/maximized state after setting the new scene
+            if (wasFullScreen) {
+                primaryStage.setFullScreen(true);
+            } else if (wasMaximized) {
+                primaryStage.setMaximized(true);
+            }
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
